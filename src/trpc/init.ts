@@ -1,10 +1,16 @@
 import { initTRPC } from "@trpc/server";
+import { headers } from "next/headers";
 import { cache } from "react";
 import { ZodError } from "zod";
+import { auth } from "@/lib/auth";
 
 export const createTRPCContext = cache(async () => {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
 	return {
-		// Adicionar auth aqui depois
+		session,
 	};
 });
 
@@ -23,3 +29,13 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+	if (!ctx.session) {
+		throw new Error("Unauthorized");
+	}
+	return next({
+		ctx: {
+			session: ctx.session,
+		},
+	});
+});
