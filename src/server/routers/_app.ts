@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../../trpc/init";
+import {
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure,
+} from "../../trpc/init";
 
 export const appRouter = createTRPCRouter({
 	hello: publicProcedure
@@ -13,6 +17,12 @@ export const appRouter = createTRPCRouter({
 				greeting: `Hello ${opts.input.text}`,
 			};
 		}),
+
+	getProfile: protectedProcedure.query(async ({ ctx }) => {
+		// Here we could use the UserService to fetch more details if needed
+		// but for now, returning the session user is enough.
+		return ctx.session.user;
+	}),
 });
 
 export type AppRouter = typeof appRouter;

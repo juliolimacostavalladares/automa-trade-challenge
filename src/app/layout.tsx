@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import TRPCProvider from "@/trpc/Provider";
+import { Providers } from "@/components/providers";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -10,6 +10,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
+	subsets: ["latin"],
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+	variable: "--font-plus-jakarta",
 	subsets: ["latin"],
 });
 
@@ -24,11 +29,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} ${plusJakarta.variable} antialiased`}
 			>
-				<TRPCProvider>{children}</TRPCProvider>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
