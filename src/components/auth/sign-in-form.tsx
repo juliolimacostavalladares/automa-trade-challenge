@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { type SignInInput, signInSchema } from "@/schemas/auth.schema";
 
 export default function SignInForm() {
-	const { signIn, isLoading, error } = useAuth();
+	const { signIn, isLoading, error: authError } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 
 	const onSubmit = (data: SignInInput) => {
@@ -91,7 +91,7 @@ export default function SignInForm() {
 					</label>
 				</div>
 
-				<Auth.Error error={error} />
+				<Auth.Error error={authError} />
 
 				<Auth.Submit className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 h-auto rounded-xl shadow-lg shadow-primary/20 transition-all duration-200 transform active:scale-[0.98]">
 					Sign In

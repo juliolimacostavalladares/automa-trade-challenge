@@ -38,10 +38,10 @@
 	--color-popover: var(--popover);
 	--color-card-foreground: var(--card-foreground);
 	--color-card: var(--card);
-	
+
 	/* Palette Raw Tokens */
 	--color-color1: #f6d76b;
-	--color-color2: #ff9036;
+	--color-color2: #eb9e6e;
 	--color-color3: #d6254d;
 	--color-color4: #ff5475;
 	--color-color5: #fdeba9;
@@ -56,80 +56,71 @@
 }
 
 :root {
-	--radius: 0.75rem;
-	/* Palette Values */
-	--palette-1: #f6d76b;
-	--palette-2: #ff9036;
-	--palette-3: #d6254d;
-	--palette-4: #ff5475;
-	--palette-5: #fdeba9;
+	--radius: 1rem;
 
-	/* Background Light - Updated to very light warm white */
-	--background: #fffdf5;
+	/* Background: Earthy beige #e0d3b8 */
+	--background: #e0d3b8;
 	--foreground: #1c1917;
-	
-	--card: #ffffff;
+
+	/* Surface: #f5efe4 */
+	--card: #f5efe4;
 	--card-foreground: #1c1917;
-	
-	--popover: #ffffff;
+
+	--popover: #f5efe4;
 	--popover-foreground: #1c1917;
-	
-	/* Primary: Color 2 (Orange) */
-	--primary: var(--palette-2);
-	--primary-foreground: #1c1917; /* Dark text on orange for contrast */
-	
-	/* Secondary: Color 1 (Yellow) */
-	--secondary: var(--palette-1);
+
+	/* Primary: #eb9e6e */
+	--primary: #eb9e6e;
+	--primary-foreground: #ffffff;
+
+	--secondary: #f6d76b;
 	--secondary-foreground: #1c1917;
-	
-	/* Muted: Color 5 (Pale Yellow) - adapted for background use */
-	--muted: #fdeba9; /* Using Color 5 directly or maybe opacity? Let's use Color 5 as a base mute */
-	--muted-foreground: #6b6050; /* Brownish gray text */
-	
-	/* Accent: Color 4 (Pink/Salmon) */
-	--accent: var(--palette-4);
+
+	/* Muted Text: #706f6b */
+	--muted: #dcd4c5;
+	--muted-foreground: #706f6b;
+
+	--accent: #ff5475;
 	--accent-foreground: #ffffff;
-	
-	/* Destructive: Color 3 (Red) */
-	--destructive: var(--palette-3);
+
+	--destructive: #d6254d;
 	--destructive-foreground: #ffffff;
-	
-	--border: rgba(28, 25, 23, 0.1);
-	--input: rgba(28, 25, 23, 0.1);
-	--ring: var(--palette-2);
+
+	--border: rgba(28, 25, 23, 0.08);
+	--input: rgba(28, 25, 23, 0.08);
+	--ring: #eb9e6e;
 }
 
 .dark {
-	/* Background Dark from previous request */
-	--background: #1c1917;
-	--foreground: #ffffff;
-	
-	--card: #292524; /* Slightly lighter stone */
-	--card-foreground: #ffffff;
-	
-	--popover: #292524;
-	--popover-foreground: #ffffff;
-	
-	/* Primary: Color 2 (Orange) */
-	--primary: var(--palette-2);
-	--primary-foreground: #1c1917;
-	
-	/* Secondary: Color 1 (Yellow) */
-	--secondary: var(--palette-1);
-	--secondary-foreground: #1c1917;
-	
-	--muted: #44403c;
+	/* Background Dark: #1a1a17 */
+	--background: #1a1a17;
+	--foreground: #d1d1cf;
+
+	/* Surface Dark: #2a2a24 */
+	--card: #2a2a24;
+	--card-foreground: #d1d1cf;
+
+	--popover: #2a2a24;
+	--popover-foreground: #d1d1cf;
+
+	--primary: #eb9e6e;
+	--primary-foreground: #1a1a17;
+
+	--secondary: #f6d76b;
+	--secondary-foreground: #1a1a17;
+
+	--muted: #3a3a34;
 	--muted-foreground: #a8a29e;
-	
-	--accent: var(--palette-4);
+
+	--accent: #ff5475;
 	--accent-foreground: #ffffff;
-	
-	--destructive: var(--palette-3);
+
+	--destructive: #d6254d;
 	--destructive-foreground: #ffffff;
-	
-	--border: rgba(255, 255, 255, 0.1);
-	--input: rgba(255, 255, 255, 0.1);
-	--ring: var(--palette-2);
+
+	--border: rgba(255, 255, 255, 0.08);
+	--input: rgba(255, 255, 255, 0.08);
+	--ring: #eb9e6e;
 }
 
 @layer base {
@@ -144,5 +135,16 @@
 @layer utilities {
 	.custom-shadow {
 		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+	}
+
+	.custom-scrollbar::-webkit-scrollbar {
+		width: 6px;
+	}
+	.custom-scrollbar::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		background: rgba(112, 111, 107, 0.2);
+		border-radius: 10px;
 	}
 }
