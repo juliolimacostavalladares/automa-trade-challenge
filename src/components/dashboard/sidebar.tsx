@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
 	{ label: "Dashboard", href: "/", icon: LayoutDashboard },
-	{ label: "Boards", href: "/boards", icon: SquareKanban },
+	{ label: "Tasks", href: "/tasks", icon: SquareKanban },
 	{ label: "Users", href: "/users", icon: Users },
 ];
 

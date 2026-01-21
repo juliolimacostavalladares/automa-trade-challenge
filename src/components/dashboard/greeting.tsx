@@ -17,14 +17,11 @@ export function Greeting() {
 			<h1 className="font-display font-bold text-5xl text-foreground mt-1 leading-tight">
 				{taskCount === 0 ? (
 					<>
-						You have no
-						<br />
-						<span className="text-primary">tasks</span> today
+						You have no <span className="text-primary">tasks</span> today
 					</>
 				) : (
 					<>
-						You've got
-						<br />
+						You've got{" "}
 						<span className="text-primary">
 							{taskCount} {taskCount === 1 ? "task" : "tasks"}
 						</span>{" "}

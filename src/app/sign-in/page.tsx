@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { CheckCircle2, Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { lazy, Suspense, useEffect, useState } from "react";
@@ -27,16 +27,18 @@ export default function SignInPage() {
 					{/* Left Side - Hero/Branding */}
 					<div className="hidden md:flex md:w-1/2 bg-secondary/50 p-12 flex-col justify-between">
 						<div className="flex items-center gap-3">
-							<div className="w-10 h-10 bg-foreground rounded-xl flex items-center justify-center transform rotate-12">
-								<span className="text-background font-bold text-xl">t.</span>
+							<div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+								<CheckCircle2 className="text-primary-foreground h-6 w-6" />
 							</div>
-							<span className="text-xl font-bold text-foreground">Taskify</span>
+							<span className="text-xl font-bold text-foreground">
+								TaskFlow
+							</span>
 						</div>
 						<div className="space-y-6">
-							<h1 className="text-4xl font-bold leading-tight text-foreground">
+							<h1 className="text-5xl font-bold leading-tight text-foreground">
 								Manage your tasks <br />
-								<span className="text-primary">more efficiently</span> than
-								ever.
+								<span className="text-primary italic">more efficiently</span>{" "}
+								than ever.
 							</h1>
 							<p className="text-muted-foreground text-lg text-balance">
 								Join thousands of teams who simplify their workflow and boost
@@ -57,7 +59,7 @@ export default function SignInPage() {
 							</div>
 						</div>
 						<div className="text-muted-foreground/60 text-sm">
-							© 2026 Taskify Inc. All rights reserved.
+							© 2026 TaskFlow Inc. All rights reserved.
 						</div>
 					</div>
 
@@ -67,7 +69,9 @@ export default function SignInPage() {
 							<div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center transform rotate-12">
 								<span className="text-background font-bold text-sm">t.</span>
 							</div>
-							<span className="text-lg font-bold text-foreground">Taskify</span>
+							<span className="text-lg font-bold text-foreground">
+								TaskFlow
+							</span>
 						</div>
 
 						<Suspense

@@ -1,2 +1,0 @@
--- ALTER TABLE "user" ADD COLUMN "role" text DEFAULT 'member' NOT NULL;--> statement-breakpoint
--- ALTER TABLE "user" ADD COLUMN "status" text DEFAULT 'active' NOT NULL;

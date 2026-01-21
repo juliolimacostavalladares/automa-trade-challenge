@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/hooks/use-confirm";
 import { useBoardStore } from "@/components/store/board-store";
 import { trpc } from "@/trpc/client";
 import type { Task } from "../components/task-card";
 import { type BoardColumn, useBoardDnD } from "./use-board-dnd";
 
-export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
-	// Global UI State
+export function useBoardLogic() {
 	const {
 		searchQuery,
 		setSearchQuery,
@@ -21,17 +21,17 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 		setCreateColumnOpen,
 	} = useBoardStore();
 
-	// Local State
-	const [columns, setColumns] = useState<BoardColumn[]>(initialColumns);
+	const [columns, setColumns] = useState<BoardColumn[]>([]);
 	const [newColumnName, setNewColumnName] = useState("");
 
 	const utils = trpc.useUtils();
+	const { data: boardData } = trpc.getMainBoard.useQuery();
+	const boardId = boardData?.id || "";
 
-	// Mutations
 	const deleteTaskMutation = trpc.deleteTask.useMutation({
 		onSuccess: () => {
 			toast.success("Task deleted");
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 		onError: (err) => toast.error(err.message),
 	});
@@ -39,7 +39,7 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 	const moveTaskMutation = trpc.moveTask.useMutation({
 		onError: () => {
 			toast.error("Failed to move task");
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 	});
 
@@ -48,18 +48,17 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 			toast.success("Column created");
 			setCreateColumnOpen(false);
 			setNewColumnName("");
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 	});
 
 	const deleteColumnMutation = trpc.deleteColumn.useMutation({
 		onSuccess: () => {
 			toast.success("Column deleted");
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 	});
 
-	// DnD Logic Delegation
 	const { sensors, activeDragTask, onDragStart, onDragOver, onDragEnd } =
 		useBoardDnD({
 			columns,
@@ -73,12 +72,12 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 			},
 		});
 
-	// Effect: Sync Initial Data
 	useEffect(() => {
-		setColumns(initialColumns);
-	}, [initialColumns]);
+		if (boardData?.columns) {
+			setColumns(boardData.columns as unknown as BoardColumn[]);
+		}
+	}, [boardData]);
 
-	// Computed: Filtering
 	const filteredColumns = useMemo(() => {
 		if (!searchQuery.trim()) return columns;
 		const query = searchQuery.toLowerCase();
@@ -94,7 +93,6 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 		}));
 	}, [columns, searchQuery]);
 
-	// Action Handlers
 	const handleAddTask = (columnId?: string) => {
 		openTaskDialog({ columnId });
 	};
@@ -103,54 +101,64 @@ export function useBoardLogic(boardId: string, initialColumns: BoardColumn[]) {
 		openTaskDialog({ task });
 	};
 
-	const handleDeleteTask = (id: string) => {
-		if (confirm("Delete task?")) {
+	const confirm = useConfirm();
+
+	const handleDeleteTask = async (id: string) => {
+		if (
+			await confirm({
+				title: "Delete task?",
+				description: "This action cannot be undone.",
+				variant: "destructive",
+			})
+		) {
 			deleteTaskMutation.mutate({ id });
 		}
 	};
 
-	const handleDeleteColumn = (id: string) => {
-		if (confirm("Delete column and all its tasks?")) {
+	const handleDeleteColumn = async (id: string) => {
+		if (
+			await confirm({
+				title: "Delete column?",
+				description:
+					"This will delete the column and all its tasks. This action cannot be undone.",
+				variant: "destructive",
+			})
+		) {
 			deleteColumnMutation.mutate({ id });
 		}
 	};
 
 	const handleCreateColumn = () => {
-		if (!newColumnName.trim()) return;
+		if (!newColumnName.trim() || !boardId) return;
 		createColumnMutation.mutate({ boardId, name: newColumnName });
 	};
 
 	return {
-		// Data
+		boardId,
 		columns: filteredColumns,
 		activeDragTask,
 		sensors,
 		isCreatingColumn: createColumnMutation.isPending,
 
-		// Search
 		searchQuery,
 		setSearchQuery,
 
-		// Task Dialog
 		taskDialogOpen: isTaskDialogOpen,
 		selectedTask,
 		selectedColumnId,
 		setTaskDialogOpen: (open: boolean) => (open ? null : closeTaskDialog()),
 
-		// Create Column Dialog
 		createColumnOpen: isCreateColumnOpen,
 		setCreateColumnOpen,
 		newColumnName,
 		setNewColumnName,
 
-		// Actions
 		handleAddTask,
 		handleEditTask,
 		handleDeleteTask,
 		handleDeleteColumn,
 		handleCreateColumn,
 
-		// DnD Events
 		onDragStart,
 		onDragOver,
 		onDragEnd,

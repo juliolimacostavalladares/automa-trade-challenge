@@ -33,7 +33,7 @@ export default function SignUpPage() {
 									<CheckCircle2 className="text-primary-foreground h-6 w-6" />
 								</div>
 								<span className="text-2xl font-bold tracking-tight text-foreground">
-									TaskMaster
+									TaskFlow
 								</span>
 							</div>
 							<h1 className="text-5xl font-extrabold leading-tight text-foreground">
@@ -74,7 +74,7 @@ export default function SignUpPage() {
 						</div>
 
 						<div className="relative z-10 flex items-center gap-4 text-sm font-medium text-muted-foreground">
-							<span>© 2026 TaskMaster Inc.</span>
+							<span>© 2026 TaskFlow Inc.</span>
 
 							<span>•</span>
 

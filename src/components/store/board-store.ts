@@ -13,9 +13,6 @@ interface BoardState {
 
 	isCreateColumnOpen: boolean;
 	setCreateColumnOpen: (open: boolean) => void;
-
-	isCreateBoardOpen: boolean;
-	setCreateBoardOpen: (open: boolean) => void;
 }
 
 export const useBoardStore = create<BoardState>((set) => ({
@@ -40,7 +37,4 @@ export const useBoardStore = create<BoardState>((set) => ({
 
 	isCreateColumnOpen: false,
 	setCreateColumnOpen: (open) => set({ isCreateColumnOpen: open }),
-
-	isCreateBoardOpen: false,
-	setCreateBoardOpen: (open) => set({ isCreateBoardOpen: open }),
 }));

@@ -1,65 +1,99 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import Link from "next/link";
-import { CreateBoardDialog } from "@/components/board/create-board-dialog";
+import { Activity, CheckCircle2, Clock } from "lucide-react";
 import { Greeting } from "@/components/dashboard/greeting";
-import { ProjectCard } from "@/components/dashboard/project-card";
-import { UsersTable } from "@/components/users/users-table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/trpc/client";
 
 export default function DashboardPage() {
-	const { data: boards, isLoading: isLoadingBoards } =
-		trpc.getBoards.useQuery();
+	const { data: tasks } = trpc.getTasks.useQuery();
+
+	const totalTasks = tasks?.length || 0;
+	// Mocking other stats for now as we don't have column info in simple getTasks list yet
+	// A real implementation would fetch tasks with column relations or aggregated stats.
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-8 animate-in fade-in duration-500">
 			<Greeting />
 
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-				<div className="lg:col-span-2 space-y-8">
-					<div className="flex items-center justify-between">
-						<h2 className="text-xl font-bold">Your Boards</h2>
-						<CreateBoardDialog />
-					</div>
+			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				<Card className="hover:shadow-md transition-shadow">
+					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Total Tasks
+						</CardTitle>
+						<Activity className="h-4 w-4 text-primary" />
+					</CardHeader>
+					<CardContent>
+						<div className="text-3xl font-bold">{totalTasks}</div>
+						<p className="text-xs text-muted-foreground mt-1">
+							Across your workspace
+						</p>
+					</CardContent>
+				</Card>
 
-					{isLoadingBoards ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{[1, 2].map((i) => (
-								<div
-									key={i}
-									className="h-48 rounded-xl bg-muted animate-pulse"
-								/>
-							))}
-						</div>
-					) : (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{boards?.map((board) => (
-								<Link key={board.id} href={`/boards/${board.id}`}>
-									<ProjectCard
-										title={board.name}
-										description={board.description || "No description"}
-										progress={0} // We can calculate progress later
-										members={0}
-									/>
-								</Link>
-							))}
-							{boards?.length === 0 && (
-								<div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-									No boards found. Create one to get started!
-								</div>
-							)}
-						</div>
-					)}
+				<Card className="hover:shadow-md transition-shadow">
+					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Completed
+						</CardTitle>
+						<CheckCircle2 className="h-4 w-4 text-green-500" />
+					</CardHeader>
+					<CardContent>
+						<div className="text-3xl font-bold">--</div>
+						<p className="text-xs text-muted-foreground mt-1">
+							Tasks moved to Done
+						</p>
+					</CardContent>
+				</Card>
 
-					<div className="pt-8">
-						<h2 className="text-xl font-bold mb-4">Team Members</h2>
-						<UsersTable />
-					</div>
+				<Card className="hover:shadow-md transition-shadow">
+					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Pending
+						</CardTitle>
+						<Clock className="h-4 w-4 text-orange-500" />
+					</CardHeader>
+					<CardContent>
+						<div className="text-3xl font-bold">--</div>
+						<p className="text-xs text-muted-foreground mt-1">
+							In Progress or To Do
+						</p>
+					</CardContent>
+				</Card>
+			</div>
+
+			{/* Recent Activity Placeholder */}
+			<div className="rounded-xl border bg-card text-card-foreground shadow">
+				<div className="flex flex-col space-y-1.5 p-6">
+					<h3 className="font-semibold leading-none tracking-tight">
+						Recent Activity
+					</h3>
+					<p className="text-sm text-muted-foreground">
+						Latest updates from your team.
+					</p>
 				</div>
-
-				<div className="space-y-8">
-					{/* Sidebar widgets or similar could go here */}
+				<div className="p-6 pt-0">
+					<div className="space-y-4">
+						{tasks?.slice(0, 5).map((task) => (
+							<div key={task.id} className="flex items-center gap-4">
+								<div className="w-2 h-2 rounded-full bg-primary" />
+								<div className="flex-1 space-y-1">
+									<p className="text-sm font-medium leading-none">
+										{task.title}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										Created on {new Date(task.createdAt).toLocaleDateString()}
+									</p>
+								</div>
+							</div>
+						))}
+						{totalTasks === 0 && (
+							<p className="text-sm text-muted-foreground">
+								No activity recorded yet.
+							</p>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

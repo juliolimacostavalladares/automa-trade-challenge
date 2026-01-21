@@ -28,6 +28,7 @@ export const taskRouter = createTRPCRouter({
 					label: input.label,
 					dueDate: input.dueDate ? new Date(input.dueDate) : null,
 					assigneeId: input.assigneeId || null,
+					authorId: ctx.session.user.id,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					order: 0,

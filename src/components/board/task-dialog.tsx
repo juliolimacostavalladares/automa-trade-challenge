@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Calendar, Tag, User } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -9,13 +10,7 @@ import {
 	taskSchema,
 } from "@/components/schemas/board.schema";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -71,6 +66,7 @@ export function TaskDialog({
 		setValue,
 		reset,
 		getValues,
+		watch,
 		formState: { errors },
 	} = form;
 
@@ -104,9 +100,7 @@ export function TaskDialog({
 
 	const createTask = trpc.createTask.useMutation({
 		onSuccess: () => {
-			toast.success("Task created");
-			onOpenChange(false);
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 	});
 
@@ -114,7 +108,7 @@ export function TaskDialog({
 		onSuccess: () => {
 			toast.success("Task updated");
 			onOpenChange(false);
-			utils.getBoard.invalidate({ id: boardId });
+			utils.getMainBoard.invalidate();
 		},
 	});
 
@@ -140,122 +134,170 @@ export function TaskDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-125">
-				<DialogHeader>
-					<DialogTitle>{isEditing ? "Edit Task" : "Create Task"}</DialogTitle>
-				</DialogHeader>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-					<div className="space-y-2">
-						<Label htmlFor="title">Title</Label>
-						<Input id="title" {...register("title")} placeholder="Task title" />
-						{errors.title && (
-							<p className="text-sm text-destructive">
-								{errors.title.message as string}
-							</p>
-						)}
-					</div>
+			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[80vh] flex flex-col sm:max-w-4xl">
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className="flex flex-1 flex-col md:flex-row h-full"
+				>
+					<div className="flex-1 p-6 md:p-8 flex flex-col overflow-y-auto">
+						<div className="space-y-6 flex-1">
+							<div>
+								<Input
+									id="title"
+									{...register("title")}
+									placeholder="Task Title"
+									className="text-2xl md:text-3xl font-bold border-none px-0 shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 h-auto"
+								/>
+								{errors.title && (
+									<p className="text-sm text-destructive mt-1">
+										{errors.title.message as string}
+									</p>
+								)}
+							</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="column">Column</Label>
-						<Select
-							onValueChange={(val) => setValue("columnId", val)}
-							defaultValue={getValues("columnId")}
-							// Important: controlled value for Select when resetting form
-							value={form.watch("columnId")}
-						>
-							<SelectTrigger>
-								<SelectValue placeholder="Select column" />
-							</SelectTrigger>
-							<SelectContent>
-								{columns.map((col) => (
-									<SelectItem key={col.id} value={col.id}>
-										{col.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						{errors.columnId && (
-							<p className="text-sm text-destructive">
-								{errors.columnId.message as string}
-							</p>
-						)}
-					</div>
+							<div className="space-y-2 h-full flex flex-col">
+								<Label
+									htmlFor="description"
+									className="text-sm font-semibold text-muted-foreground uppercase tracking-wider"
+								>
+									Description
+								</Label>
+								<textarea
+									id="description"
+									{...register("description")}
+									placeholder="Add a detailed description..."
+									className="flex-1 w-full min-h-50 resize-none bg-transparent border-none focus:outline-none text-base leading-relaxed placeholder:text-muted-foreground/40"
+								/>
+							</div>
+						</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="assignee">Assignee</Label>
-						<Select
-							onValueChange={(val) => setValue("assigneeId", val)}
-							defaultValue={getValues("assigneeId")}
-							value={form.watch("assigneeId")}
-						>
-							<SelectTrigger>
-								<SelectValue placeholder="Select assignee" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="unassigned">Unassigned</SelectItem>
-								{users?.map((user) => (
-									<SelectItem key={user.id} value={user.id}>
-										{user.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="label">Label (Category)</Label>
-						<Input
-							id="label"
-							{...register("label")}
-							placeholder="e.g. Design, Bug, Marketing"
-						/>
-					</div>
-
-					<div className="grid grid-cols-2 gap-4">
-						<div className="space-y-2">
-							<Label htmlFor="priority">Priority</Label>
-							<Select
-								onValueChange={(val: any) => setValue("priority", val)}
-								defaultValue={getValues("priority")}
-								value={form.watch("priority")}
+						<div className="flex justify-end gap-2 mt-6 pt-4 border-t md:hidden">
+							<Button
+								type="button"
+								variant="ghost"
+								onClick={() => onOpenChange(false)}
 							>
-								<SelectTrigger>
-									<SelectValue placeholder="Select priority" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="low">Low</SelectItem>
-									<SelectItem value="medium">Medium</SelectItem>
-									<SelectItem value="high">High</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="dueDate">Due Date</Label>
-							<Input type="date" id="dueDate" {...register("dueDate")} />
+								Cancel
+							</Button>
+							<Button type="submit" disabled={isPending}>
+								{isPending ? "Saving..." : "Save Changes"}
+							</Button>
 						</div>
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="description">Description</Label>
-						<Input
-							id="description"
-							{...register("description")}
-							placeholder="Task details..."
-						/>
-					</div>
+					<div className="w-full md:w-80 bg-muted/30 border-l border-border p-6 space-y-6 overflow-y-auto">
+						<div className="space-y-4">
+							<div className="space-y-1.5">
+								<Label className="text-xs font-semibold text-muted-foreground uppercase">
+									Status
+								</Label>
+								<Select
+									onValueChange={(val) => setValue("columnId", val)}
+									defaultValue={getValues("columnId")}
+									value={watch("columnId")}
+								>
+									<SelectTrigger className="w-full bg-background border-border">
+										<SelectValue placeholder="Select status" />
+									</SelectTrigger>
+									<SelectContent>
+										{columns.map((col) => (
+											<SelectItem key={col.id} value={col.id}>
+												{col.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 
-					<DialogFooter>
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => onOpenChange(false)}
-						>
-							Cancel
-						</Button>
-						<Button type="submit" disabled={isPending}>
-							{isPending ? "Saving..." : "Save"}
-						</Button>
-					</DialogFooter>
+							<div className="space-y-1.5">
+								<Label className="text-xs font-semibold text-muted-foreground uppercase">
+									Priority
+								</Label>
+								<Select
+									onValueChange={(val: any) => setValue("priority", val)}
+									defaultValue={getValues("priority")}
+									value={watch("priority")}
+								>
+									<SelectTrigger className="w-full bg-background border-border">
+										<SelectValue placeholder="Select priority" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="low">Low</SelectItem>
+										<SelectItem value="medium">Medium</SelectItem>
+										<SelectItem value="high">High</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+
+							<div className="space-y-1.5">
+								<Label className="text-xs font-semibold text-muted-foreground uppercase">
+									Assignee
+								</Label>
+								<Select
+									onValueChange={(val) => setValue("assigneeId", val)}
+									defaultValue={getValues("assigneeId")}
+									value={watch("assigneeId")}
+								>
+									<SelectTrigger className="w-full bg-background border-border">
+										<div className="flex items-center gap-2">
+											<User className="h-4 w-4 text-muted-foreground" />
+											<SelectValue placeholder="Unassigned" />
+										</div>
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="unassigned">Unassigned</SelectItem>
+										{users?.map((user) => (
+											<SelectItem key={user.id} value={user.id}>
+												{user.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+
+							<div className="space-y-1.5">
+								<Label className="text-xs font-semibold text-muted-foreground uppercase">
+									Label
+								</Label>
+								<div className="relative">
+									<Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+									<Input
+										{...register("label")}
+										placeholder="e.g. Bug"
+										className="pl-9 bg-background border-border"
+									/>
+								</div>
+							</div>
+
+							<div className="space-y-1.5">
+								<Label className="text-xs font-semibold text-muted-foreground uppercase">
+									Due Date
+								</Label>
+								<div className="relative">
+									<Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+									<Input
+										type="date"
+										{...register("dueDate")}
+										className="pl-9 bg-background border-border block"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div className="hidden md:flex flex-col gap-2 pt-6 mt-auto">
+							<Button type="submit" disabled={isPending} className="w-full">
+								{isPending ? "Saving..." : "Save Changes"}
+							</Button>
+							<Button
+								type="button"
+								variant="ghost"
+								onClick={() => onOpenChange(false)}
+								className="w-full"
+							>
+								Cancel
+							</Button>
+						</div>
+					</div>
 				</form>
 			</DialogContent>
 		</Dialog>

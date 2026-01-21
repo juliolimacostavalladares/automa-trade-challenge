@@ -9,8 +9,10 @@ import {
 	Trash2,
 	UserPlus,
 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/hooks/use-confirm";
 import {
 	type InviteUserInput,
 	inviteUserSchema,
@@ -50,7 +52,14 @@ export function UsersTable() {
 	const { data: usersData, isLoading } = trpc.getUsers.useQuery();
 	const users = usersData || [];
 
+	const [searchQuery, setSearchQuery] = useState("");
 	const { isInviteUserOpen, setInviteUserOpen } = useUserStore();
+
+	const filteredUsers = users.filter(
+		(user) =>
+			user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+	);
 
 	const form = useForm<InviteUserInput>({
 		resolver: zodResolver(inviteUserSchema),
@@ -96,8 +105,18 @@ export function UsersTable() {
 		await inviteMutation.mutateAsync(data);
 	};
 
+	const confirm = useConfirm();
+
 	const handleDelete = async (id: string) => {
-		if (confirm("Are you sure you want to remove this user?")) {
+		if (
+			await confirm({
+				title: "Delete User",
+				description:
+					"Are you sure you want to remove this user? This action cannot be undone.",
+				confirmText: "Delete",
+				variant: "destructive",
+			})
+		) {
 			await deleteMutation.mutateAsync({ id });
 		}
 	};
@@ -155,43 +174,21 @@ export function UsersTable() {
 
 			<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
 				<div className="flex items-center gap-4 w-full lg:w-auto flex-1 max-2-xl">
-					<div className="relative flex-1 group">
-						<Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+					<div className="flex-1 max-w-2xl">
 						<Input
-							className="w-full bg-card border-none rounded-2xl py-6 pl-12 pr-4 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
+							startIcon={<Search className="h-5 w-5" />}
+							className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
 							placeholder="Search users..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
-					</div>
+					</div>{" "}
 					<Button
 						onClick={() => setInviteUserOpen(true)}
 						className="bg-primary text-primary-foreground h-12 px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
 					>
 						<UserPlus className="h-5 w-5" />
 						Invite New User
-					</Button>
-				</div>
-
-				<div className="flex bg-card p-1.5 rounded-full shadow-sm border border-border">
-					<Button
-						variant="ghost"
-						size="sm"
-						className="rounded-full px-5 bg-background dark:bg-white/10 text-primary dark:text-white font-bold text-xs shadow-sm"
-					>
-						All
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="rounded-full px-5 text-muted-foreground hover:text-primary font-medium text-xs"
-					>
-						Admin
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="rounded-full px-5 text-muted-foreground hover:text-primary font-medium text-xs"
-					>
-						Member
 					</Button>
 				</div>
 			</div>
@@ -225,7 +222,7 @@ export function UsersTable() {
 											<TableCell colSpan={5} className="h-20 bg-muted/20" />
 										</TableRow>
 									))
-								: users.map((user) => (
+								: filteredUsers.map((user) => (
 										<TableRow
 											key={user.id}
 											className="group hover:bg-muted/30 transition-colors border-border"
@@ -293,9 +290,10 @@ export function UsersTable() {
 
 				<div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/10">
 					<p className="text-xs text-muted-foreground opacity-60 font-medium">
-						Showing {users.length} users
+						Showing {filteredUsers.length} users
 					</p>
 					<div className="flex gap-2">
+						{" "}
 						<Button
 							variant="outline"
 							size="icon"
@@ -315,7 +313,6 @@ export function UsersTable() {
 				</div>
 			</div>
 
-			{/* Invite Modal */}
 			<Dialog open={isInviteUserOpen} onOpenChange={setInviteUserOpen}>
 				<DialogContent>
 					<DialogHeader>

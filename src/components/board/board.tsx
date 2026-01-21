@@ -1,7 +1,7 @@
 "use client";
 
 import { closestCorners, DndContext, DragOverlay } from "@dnd-kit/core";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -17,20 +17,9 @@ import { type Task, TaskCard } from "./components/task-card";
 import { useBoardLogic } from "./hooks/use-board-logic";
 import { TaskDialog } from "./task-dialog";
 
-interface BoardColumnType {
-	id: string;
-	name: string;
-	tasks: Task[];
-	order: number;
-}
-
-interface BoardProps {
-	boardId: string;
-	initialColumns: BoardColumnType[];
-}
-
-export function Board({ boardId, initialColumns }: BoardProps) {
+export function Board() {
 	const {
+		boardId,
 		columns,
 		activeDragTask,
 		sensors,
@@ -53,7 +42,13 @@ export function Board({ boardId, initialColumns }: BoardProps) {
 		onDragOver,
 		onDragEnd,
 		isCreatingColumn,
-	} = useBoardLogic(boardId, initialColumns);
+	} = useBoardLogic();
+
+	if (!boardId && columns.length === 0) {
+		return (
+			<div className="flex h-full items-center justify-center">Loading...</div>
+		);
+	}
 
 	return (
 		<DndContext
@@ -63,13 +58,14 @@ export function Board({ boardId, initialColumns }: BoardProps) {
 			onDragOver={onDragOver}
 			onDragEnd={onDragEnd}
 		>
-			<div className="flex flex-col h-full space-y-4">
+			<div className="flex flex-col h-full space-y-4 space-x-1">
 				<div className="w-full max-w-sm px-1">
 					<Input
+						startIcon={<Search className="h-4 w-4" />}
 						placeholder="Search tasks..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="bg-background"
+						className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
 					/>
 				</div>
 

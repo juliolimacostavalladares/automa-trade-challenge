@@ -1,6 +1,5 @@
 import { Calendar, MoreHorizontal } from "lucide-react";
 import { memo } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -61,7 +60,10 @@ export const TaskCard = memo(function TaskCard({
 		: false;
 
 	return (
-		<Card className="p-4 mb-3 hover:shadow-md transition-shadow group relative bg-card">
+		<Card
+			className="p-4 mb-3 hover:shadow-md transition-shadow group relative bg-card cursor-pointer"
+			onClick={() => onEdit(task)}
+		>
 			<div className="flex justify-between items-start mb-2">
 				{task.label ? (
 					<span
@@ -82,17 +84,18 @@ export const TaskCard = memo(function TaskCard({
 							variant="ghost"
 							size="icon"
 							className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity -mr-2 -mt-2"
+							onClick={(e) => e.stopPropagation()}
 						>
 							<MoreHorizontal className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem onClick={() => onEdit(task)}>
-							Edit
-						</DropdownMenuItem>
 						<DropdownMenuItem
 							className="text-destructive"
-							onClick={() => onDelete(task.id)}
+							onClick={(e) => {
+								e.stopPropagation();
+								onDelete(task.id);
+							}}
 						>
 							Delete
 						</DropdownMenuItem>

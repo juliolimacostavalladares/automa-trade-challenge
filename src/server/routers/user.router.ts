@@ -30,7 +30,6 @@ export const userRouter = createTRPCRouter({
 					id: crypto.randomUUID(),
 					name: input.name,
 					email: input.email,
-					emailVerified: false,
 					role: input.role,
 					status: "pending",
 					createdAt: new Date(),
