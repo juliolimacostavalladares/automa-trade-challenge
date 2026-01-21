@@ -50,6 +50,7 @@ import { trpc } from "@/trpc/client";
 export function UsersTable() {
 	const utils = trpc.useUtils();
 	const { data: usersData, isLoading } = trpc.getUsers.useQuery();
+	const { data: currentUser } = trpc.getProfile.useQuery();
 	const users = usersData || [];
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -58,8 +59,9 @@ export function UsersTable() {
 
 	const filteredUsers = users.filter(
 		(user) =>
-			user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+			user.id !== currentUser?.id &&
+			(user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				user.email.toLowerCase().includes(searchQuery.toLowerCase())),
 	);
 
 	const form = useForm<InviteUserInput>({

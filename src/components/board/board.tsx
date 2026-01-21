@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -142,6 +143,9 @@ export function Board() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Add New Column</DialogTitle>
+						<DialogDescription>
+							Create a new stage for your task management board.
+						</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-4 py-4">
 						<div className="space-y-2">

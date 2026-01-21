@@ -10,7 +10,12 @@ import {
 	taskSchema,
 } from "@/components/schemas/board.schema";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -131,6 +136,12 @@ export function TaskDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[80vh] flex flex-col sm:max-w-4xl">
+				<DialogTitle className="sr-only">
+					{isEditing ? "Edit Task" : "Create New Task"}
+				</DialogTitle>
+				<DialogDescription className="sr-only">
+					Fill in the details for your task.
+				</DialogDescription>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-1 flex-col md:flex-row h-full"

@@ -7,8 +7,8 @@ export const taskRouter = createTRPCRouter({
 	createTask: protectedProcedure
 		.input(
 			z.object({
-				columnId: z.string().uuid().optional().or(z.string()), // Support both UUID and generic string for now
-				title: z.string().min(1),
+				columnId: z.string().min(1, "Column ID is required"),
+				title: z.string().min(1, "Title is required"),
 				description: z.string().optional(),
 				priority: z.enum(["low", "medium", "high"]).optional(),
 				label: z.string().optional(),
@@ -50,7 +50,7 @@ export const taskRouter = createTRPCRouter({
 	updateTask: protectedProcedure
 		.input(
 			z.object({
-				id: z.string(),
+				id: z.string().min(1, "Task ID is required"),
 				title: z.string().optional(),
 				description: z.string().optional(),
 				priority: z.enum(["low", "medium", "high"]).optional(),
@@ -72,7 +72,10 @@ export const taskRouter = createTRPCRouter({
 				throw new Error("NotFound or Forbidden: Task access denied");
 			}
 
-			const updateData: any = { ...data, updatedAt: new Date() };
+			const updateData: Partial<typeof task.$inferInsert> = {
+				...data,
+				updatedAt: new Date(),
+			};
 
 			const updated = await ctx.db
 				.update(task)
@@ -83,7 +86,7 @@ export const taskRouter = createTRPCRouter({
 		}),
 
 	deleteTask: protectedProcedure
-		.input(z.object({ id: z.string() }))
+		.input(z.object({ id: z.string().min(1, "Task ID is required") }))
 		.mutation(async ({ ctx, input }) => {
 			// Ensure ownership
 			const result = await ctx.db
@@ -103,8 +106,8 @@ export const taskRouter = createTRPCRouter({
 	moveTask: protectedProcedure
 		.input(
 			z.object({
-				taskId: z.string(),
-				newColumnId: z.string(),
+				taskId: z.string().min(1, "Task ID is required"),
+				newColumnId: z.string().min(1, "New column ID is required"),
 				newIndex: z.number(),
 			}),
 		)
