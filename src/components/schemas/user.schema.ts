@@ -10,6 +10,8 @@ export type InviteUserInput = z.infer<typeof inviteUserSchema>;
 
 export const updateUserSchema = z.object({
 	id: z.string(),
+	name: z.string().min(2, "Name is required").optional(),
+	email: z.string().email("Invalid email address").optional(),
 	role: z.enum(["admin", "member", "viewer"]).optional(),
 	status: z.enum(["active", "inactive", "pending", "deleted"]).optional(),
 });

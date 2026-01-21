@@ -67,46 +67,6 @@ export default function DashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-
-			<div className="rounded-xl border bg-card text-card-foreground shadow">
-				<div className="flex flex-col space-y-1.5 p-6">
-					<h3 className="font-semibold leading-none tracking-tight">
-						Recent Activity
-					</h3>
-					<p className="text-sm text-muted-foreground">
-						Latest updates from your team.
-					</p>
-				</div>
-				<div className="p-6 pt-0">
-					<div className="space-y-4">
-						{[...allTasks]
-							.sort(
-								(a, b) =>
-									new Date(b.createdAt).getTime() -
-									new Date(a.createdAt).getTime(),
-							)
-							.slice(0, 5)
-							.map((task) => (
-								<div key={task.id} className="flex items-center gap-4">
-									<div className="w-2 h-2 rounded-full bg-primary" />
-									<div className="flex-1 space-y-1">
-										<p className="text-sm font-medium leading-none">
-											{task.title}
-										</p>
-										<p className="text-xs text-muted-foreground">
-											Created on {new Date(task.createdAt).toLocaleDateString()}
-										</p>
-									</div>
-								</div>
-							))}
-						{totalTasks === 0 && (
-							<p className="text-sm text-muted-foreground">
-								No activity recorded yet.
-							</p>
-						)}
-					</div>
-				</div>
-			</div>
 		</div>
 	);
 }

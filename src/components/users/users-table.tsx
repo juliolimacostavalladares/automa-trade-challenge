@@ -53,6 +53,7 @@ export function UsersTable() {
 	const users = usersData || [];
 
 	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedUser, setSelectedUser] = useState<any | null>(null);
 	const { isInviteUserOpen, setInviteUserOpen } = useUserStore();
 
 	const filteredUsers = users.filter(
@@ -91,6 +92,19 @@ export function UsersTable() {
 		},
 	});
 
+	const updateMutation = trpc.updateUser.useMutation({
+		onSuccess: () => {
+			toast.success("User updated successfully");
+			utils.getUsers.invalidate();
+			setInviteUserOpen(false);
+			setSelectedUser(null);
+			reset();
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
 	const deleteMutation = trpc.deleteUser.useMutation({
 		onSuccess: () => {
 			toast.success("User removed successfully");
@@ -102,7 +116,24 @@ export function UsersTable() {
 	});
 
 	const handleInvite = async (data: InviteUserInput) => {
-		await inviteMutation.mutateAsync(data);
+		if (selectedUser) {
+			await updateMutation.mutateAsync({
+				id: selectedUser.id,
+				...data,
+			});
+		} else {
+			await inviteMutation.mutateAsync(data);
+		}
+	};
+
+	const handleEdit = (user: any) => {
+		setSelectedUser(user);
+		reset({
+			name: user.name,
+			email: user.email,
+			role: user.role,
+		});
+		setInviteUserOpen(true);
 	};
 
 	const confirm = useConfirm();
@@ -173,7 +204,7 @@ export function UsersTable() {
 			</section>
 
 			<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-				<div className="flex items-center gap-4 w-full lg:w-auto flex-1 max-2-xl">
+				<div className="flex justify-between items-center gap-4 w-full lg:w-auto flex-1 max-2-xl">
 					<div className="flex-1 max-w-2xl">
 						<Input
 							startIcon={<Search className="h-5 w-5" />}
@@ -268,6 +299,7 @@ export function UsersTable() {
 													<Button
 														variant="ghost"
 														size="icon"
+														onClick={() => handleEdit(user)}
 														className="h-9 w-9 text-muted-foreground hover:text-primary"
 													>
 														<Edit2 className="h-4 w-4" />
@@ -313,12 +345,25 @@ export function UsersTable() {
 				</div>
 			</div>
 
-			<Dialog open={isInviteUserOpen} onOpenChange={setInviteUserOpen}>
+			<Dialog
+				open={isInviteUserOpen}
+				onOpenChange={(open) => {
+					setInviteUserOpen(open);
+					if (!open) {
+						setSelectedUser(null);
+						reset({ name: "", email: "", role: "member" });
+					}
+				}}
+			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Invite New User</DialogTitle>
+						<DialogTitle>
+							{selectedUser ? "Edit User" : "Invite New User"}
+						</DialogTitle>
 						<DialogDescription>
-							Send an invitation to join your team and boost productivity.
+							{selectedUser
+								? "Update user details and permissions."
+								: "Send an invitation to join your team and boost productivity."}
 						</DialogDescription>
 					</DialogHeader>
 					<form
@@ -382,15 +427,28 @@ export function UsersTable() {
 							)}
 						</div>
 						<DialogFooter>
-							<Button variant="ghost" onClick={() => setInviteUserOpen(false)}>
+							<Button
+								variant="ghost"
+								onClick={() => {
+									setInviteUserOpen(false);
+									setSelectedUser(null);
+									reset({ name: "", email: "", role: "member" });
+								}}
+							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
 								className="bg-primary"
-								disabled={inviteMutation.isPending}
+								disabled={inviteMutation.isPending || updateMutation.isPending}
 							>
-								{inviteMutation.isPending ? "Sending..." : "Send Invitation"}
+								{selectedUser
+									? updateMutation.isPending
+										? "Updating..."
+										: "Save Changes"
+									: inviteMutation.isPending
+										? "Sending..."
+										: "Send Invitation"}
 							</Button>
 						</DialogFooter>
 					</form>

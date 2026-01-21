@@ -95,16 +95,16 @@ export function TaskDialog({
 
 	const createTask = trpc.createTask.useMutation({
 		onSuccess: () => {
-			utils.getMainBoard.invalidate();
-			toast.success("Task created");
 			onOpenChange(false);
+			toast.success("Task created");
+			utils.getMainBoard.invalidate();
 		},
 	});
 
 	const updateTask = trpc.updateTask.useMutation({
 		onSuccess: () => {
-			toast.success("Task updated");
 			onOpenChange(false);
+			toast.success("Task updated");
 			utils.getMainBoard.invalidate();
 		},
 	});
@@ -175,7 +175,13 @@ export function TaskDialog({
 								Cancel
 							</Button>
 							<Button type="submit" disabled={isPending}>
-								{isPending ? "Saving..." : "Save Changes"}
+								{isPending
+									? isEditing
+										? "Saving..."
+										: "Creating..."
+									: isEditing
+										? "Save Changes"
+										: "Create Task"}
 							</Button>
 						</div>
 					</div>
@@ -267,7 +273,13 @@ export function TaskDialog({
 
 						<div className="hidden md:flex flex-col gap-2 pt-6 mt-auto">
 							<Button type="submit" disabled={isPending} className="w-full">
-								{isPending ? "Saving..." : "Save Changes"}
+								{isPending
+									? isEditing
+										? "Saving..."
+										: "Creating..."
+									: isEditing
+										? "Save Changes"
+										: "Create Task"}
 							</Button>
 							<Button
 								type="button"

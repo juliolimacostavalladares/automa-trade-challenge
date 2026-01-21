@@ -59,39 +59,60 @@ export function Board() {
 			onDragEnd={onDragEnd}
 		>
 			<div className="flex flex-col h-full space-y-4 space-x-1">
-				<div className="w-full max-w-sm px-1">
-					<Input
-						startIcon={<Search className="h-4 w-4" />}
-						placeholder="Search tasks..."
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
-					/>
-				</div>
-
-				<div className="flex h-full overflow-x-auto pb-4 gap-6 items-start">
-					{columns.map((col) => (
-						<BoardColumn
-							key={col.id}
-							id={col.id}
-							name={col.name}
-							tasks={col.tasks}
-							onAddTask={handleAddTask}
-							onEditTask={handleEditTask}
-							onDeleteTask={handleDeleteTask}
-							onDeleteColumn={handleDeleteColumn}
+				<div className="flex items-center justify-between w-full px-1 gap-4">
+					<div className="w-full max-w-sm">
+						<Input
+							startIcon={<Search className="h-4 w-4" />}
+							placeholder="Search tasks..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
 						/>
-					))}
-
-					<div className="w-80 shrink-0">
+					</div>
+					<div className="flex items-center gap-3">
 						<Button
 							variant="outline"
-							className="w-full h-12 border-dashed border-2 bg-transparent hover:bg-muted/50"
 							onClick={() => setCreateColumnOpen(true)}
+							className="h-12 px-6 rounded-2xl gap-2 border-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary transition-all active:scale-95 whitespace-nowrap font-bold"
 						>
-							<Plus className="h-4 w-4 mr-2" />
+							<Plus className="h-5 w-5" />
 							Add Column
 						</Button>
+						<Button
+							onClick={() => handleAddTask()}
+							className="bg-primary text-primary-foreground h-12 px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
+						>
+							<Plus className="h-5 w-5" />
+							Add New Task
+						</Button>
+					</div>
+				</div>
+
+				<div className="flex-1 min-h-0 bg-muted/50 rounded-3xl p-6 overflow-x-auto border border-border/50 shadow-inner">
+					<div className="flex h-full gap-6 items-start">
+						{columns.map((col) => (
+							<BoardColumn
+								key={col.id}
+								id={col.id}
+								name={col.name}
+								tasks={col.tasks}
+								onAddTask={handleAddTask}
+								onEditTask={handleEditTask}
+								onDeleteTask={handleDeleteTask}
+								onDeleteColumn={handleDeleteColumn}
+							/>
+						))}
+
+						<div className="w-80 shrink-0">
+							<Button
+								variant="outline"
+								className="w-full h-12 border-dashed border-2 bg-background/40 hover:bg-background/80 hover:border-primary/50 transition-all rounded-2xl text-muted-foreground hover:text-primary"
+								onClick={() => setCreateColumnOpen(true)}
+							>
+								<Plus className="h-4 w-4 mr-2" />
+								Add Column
+							</Button>
+						</div>
 					</div>
 				</div>
 			</div>
