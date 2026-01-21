@@ -1,5 +1,5 @@
 {
-	"id": "aa79b374-4507-4fc8-9cb2-d30a7a9a2624",
+	"id": "d6be50fd-8e45-4b2f-88ba-b86676fe39dd",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -437,12 +437,6 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"due_date": {
-					"name": "due_date",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
 				"author_id": {
 					"name": "author_id",
 					"type": "text",
@@ -574,12 +568,6 @@
 					"primaryKey": false,
 					"notNull": true
 				},
-				"email_verified": {
-					"name": "email_verified",
-					"type": "boolean",
-					"primaryKey": false,
-					"notNull": true
-				},
 				"image": {
 					"name": "image",
 					"type": "text",
@@ -627,57 +615,6 @@
 					"columns": ["email"]
 				}
 			},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"public.verification": {
-			"name": "verification",
-			"schema": "",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "text",
-					"primaryKey": true,
-					"notNull": true
-				},
-				"identifier": {
-					"name": "identifier",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"value": {
-					"name": "value",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"expires_at": {
-					"name": "expires_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
 			"policies": {},
 			"checkConstraints": {},
 			"isRLSEnabled": false

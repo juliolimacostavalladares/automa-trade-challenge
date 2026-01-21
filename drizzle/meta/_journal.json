@@ -5,22 +5,8 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1769010046217,
-			"tag": "0000_yellow_stature",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1769010504727,
-			"tag": "0001_lovely_bedlam",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1769027488374,
-			"tag": "0002_fair_risque",
+			"when": 1769027891402,
+			"tag": "0000_exotic_domino",
 			"breakpoints": true
 		}
 	]
