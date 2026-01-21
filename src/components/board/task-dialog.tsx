@@ -157,13 +157,15 @@ export function TaskDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[100dvh] sm:h-[80vh] flex flex-col sm:max-w-4xl sm:rounded-3xl">
-				<DialogTitle className="sr-only">
-					{isEditing ? "Edit Task" : "Create New Task"}
-				</DialogTitle>
-				<DialogDescription className="sr-only">
-					Fill in the details for your task.
-				</DialogDescription>
+			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[95dvh] sm:h-[80vh] flex flex-col sm:max-w-4xl sm:rounded-3xl">
+				<div className="flex items-center justify-between p-4 border-b border-border/50 md:hidden bg-muted/5">
+					<DialogTitle className="text-lg font-bold">
+						{isEditing ? "Edit Task" : "New Task"}
+					</DialogTitle>
+					<DialogDescription className="sr-only">
+						Fill in the details for your task.
+					</DialogDescription>
+				</div>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-1 flex-col md:flex-row min-h-0"

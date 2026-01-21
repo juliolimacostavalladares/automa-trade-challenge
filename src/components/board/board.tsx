@@ -166,14 +166,19 @@ export function Board() {
 							/>
 						</div>
 					</div>
-					<DialogFooter>
+					<DialogFooter className="mt-6 gap-2">
 						<Button
 							variant="outline"
 							onClick={() => setCreateColumnOpen(false)}
+							className="flex-1 sm:flex-none h-12 rounded-xl"
 						>
 							Cancel
 						</Button>
-						<Button onClick={handleCreateColumn} disabled={isCreatingColumn}>
+						<Button
+							onClick={handleCreateColumn}
+							disabled={isCreatingColumn}
+							className="flex-1 sm:flex-none h-12 rounded-xl"
+						>
 							{isCreatingColumn ? "Creating..." : "Create Column"}
 						</Button>
 					</DialogFooter>

@@ -429,7 +429,7 @@ export function UsersTable() {
 								</p>
 							)}
 						</div>
-						<DialogFooter>
+						<DialogFooter className="mt-6 gap-2">
 							<Button
 								variant="ghost"
 								onClick={() => {
@@ -437,12 +437,13 @@ export function UsersTable() {
 									setSelectedUser(null);
 									reset({ name: "", email: "", role: "member" });
 								}}
+								className="flex-1 sm:flex-none h-12 rounded-xl"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
-								className="bg-primary"
+								className="bg-primary flex-1 sm:flex-none h-12 rounded-xl"
 								disabled={inviteMutation.isPending || updateMutation.isPending}
 							>
 								{selectedUser

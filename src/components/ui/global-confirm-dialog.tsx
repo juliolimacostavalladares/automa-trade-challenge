@@ -23,13 +23,18 @@ export function GlobalConfirmDialog() {
 						<DialogDescription>{options.description}</DialogDescription>
 					)}
 				</DialogHeader>
-				<DialogFooter>
-					<Button variant="outline" onClick={handleCancel}>
+				<DialogFooter className="mt-6 gap-2">
+					<Button
+						variant="outline"
+						onClick={handleCancel}
+						className="flex-1 sm:flex-none h-12 rounded-xl"
+					>
 						{options.cancelText || "Cancel"}
 					</Button>
 					<Button
 						variant={options.variant || "default"}
 						onClick={handleConfirm}
+						className="flex-1 sm:flex-none h-12 rounded-xl shadow-lg shadow-primary/10"
 					>
 						{options.confirmText || "Confirm"}
 					</Button>
