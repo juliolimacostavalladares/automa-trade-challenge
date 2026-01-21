@@ -1,5 +1,6 @@
 import { type InferSelectModel, relations } from "drizzle-orm";
 import {
+	boolean,
 	index,
 	integer,
 	pgEnum,
@@ -23,6 +24,7 @@ export const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),
 	email: text("email").notNull().unique(),
+	emailVerified: boolean("emailVerified").notNull().default(false),
 	image: text("image"),
 	role: roleEnum("role").notNull().default("member"),
 	status: userStatusEnum("status").notNull().default("active"),
