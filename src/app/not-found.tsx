@@ -32,7 +32,7 @@ export default function NotFound() {
 					<h2 className="text-4xl md:text-6xl font-display font-bold text-muted-foregroun tracking-tight drop-shadow-md">
 						Opps, I think we’re lost
 					</h2>
-					<p className="text-lg md:text-xl font-medium text-primary-foreground opacity-100 italic drop-shadow-sm">
+					<p className="text-lg md:text-xl font-medium text-muted-foregroun opacity-100 italic drop-shadow-sm">
 						Let’s get you back somewhere familiar...
 					</p>
 				</div>

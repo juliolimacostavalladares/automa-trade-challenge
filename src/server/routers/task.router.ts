@@ -84,7 +84,6 @@ export const taskRouter = createTRPCRouter({
 		.mutation(async ({ ctx, input }) => {
 			const { taskId, newColumnId, newIndex } = input;
 
-			// 1. Get the task's current state
 			const currentTask = await ctx.db.query.task.findFirst({
 				where: eq(task.id, taskId),
 			});
@@ -96,13 +95,10 @@ export const taskRouter = createTRPCRouter({
 			const oldColumnId = currentTask.columnId;
 			const oldIndex = currentTask.order;
 
-			// 2. Handle reordering
 			if (oldColumnId === newColumnId) {
-				// Same column reordering
 				if (oldIndex === newIndex) return { success: true };
 
 				if (oldIndex < newIndex) {
-					// Moving down
 					await ctx.db
 						.update(task)
 						.set({
@@ -117,7 +113,6 @@ export const taskRouter = createTRPCRouter({
 							),
 						);
 				} else {
-					// Moving up
 					await ctx.db
 						.update(task)
 						.set({
@@ -133,8 +128,6 @@ export const taskRouter = createTRPCRouter({
 						);
 				}
 			} else {
-				// Different column
-				// A. Close gap in old column
 				await ctx.db
 					.update(task)
 					.set({
@@ -143,7 +136,6 @@ export const taskRouter = createTRPCRouter({
 					})
 					.where(and(eq(task.columnId, oldColumnId), gt(task.order, oldIndex)));
 
-				// B. Make space in new column
 				await ctx.db
 					.update(task)
 					.set({
@@ -155,7 +147,6 @@ export const taskRouter = createTRPCRouter({
 					);
 			}
 
-			// 3. Update the moved task itself
 			await ctx.db
 				.update(task)
 				.set({

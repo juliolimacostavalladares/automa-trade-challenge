@@ -63,7 +63,6 @@ export default function DashboardPage() {
 				</Card>
 			</div>
 
-			{/* Recent Activity Placeholder */}
 			<div className="rounded-xl border bg-card text-card-foreground shadow">
 				<div className="flex flex-col space-y-1.5 p-6">
 					<h3 className="font-semibold leading-none tracking-tight">
