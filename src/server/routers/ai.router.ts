@@ -2,7 +2,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../../trpc/init";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
+const googleGenAIAPIKey =
+	process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+	(() => {
+		throw new Error("GOOGLE_GENERATIVE_AI_API_KEY is not set");
+	})();
+const genAI = new GoogleGenerativeAI(googleGenAIAPIKey);
 
 export const aiRouter = createTRPCRouter({
 	generateDescription: protectedProcedure

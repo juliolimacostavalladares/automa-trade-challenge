@@ -21,9 +21,7 @@ import { cn } from "@/lib/utils";
 interface AuthFormContextValue {
 	isLoading: boolean;
 }
-const AuthFormContext = createContext<AuthFormContextValue | undefined>(
-	undefined,
-);
+const AuthFormContext = createContext<AuthFormContextValue | null>(null);
 
 interface AuthFormProps<T extends FieldValues> {
 	schema: ZodType<T>;
@@ -90,7 +88,14 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
 			register,
 			formState: { errors },
 		} = useFormContext();
-		const { isLoading } = useContext(AuthFormContext)!;
+
+		const context = useContext(AuthFormContext);
+		if (!context) {
+			throw new Error(
+				"Auth components must be used within an <AuthForm> provider.",
+			);
+		}
+		const { isLoading } = context;
 
 		const error = errors[name]?.message as string | undefined;
 
@@ -132,7 +137,13 @@ const Submit = ({
 	className,
 	...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-	const { isLoading } = useContext(AuthFormContext)!;
+	const context = useContext(AuthFormContext);
+	if (!context) {
+		throw new Error(
+			"Auth components must be used within an <AuthForm> provider.",
+		);
+	}
+	const { isLoading } = context;
 	return (
 		<Button
 			type="submit"

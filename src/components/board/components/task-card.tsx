@@ -1,4 +1,5 @@
 import { MoreHorizontal } from "lucide-react";
+import Image from "next/image";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -113,9 +114,11 @@ export const TaskCard = memo(function TaskCard({
 				{task.assignee && (
 					<div className="flex -space-x-2">
 						{task.assignee.image ? (
-							<img
+							<Image
 								src={task.assignee.image}
 								alt={task.assignee.name}
+								width={24}
+								height={24}
 								className="w-6 h-6 rounded-full border-2 border-background object-cover"
 							/>
 						) : (

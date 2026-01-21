@@ -48,7 +48,7 @@ export const boardRouter = createTRPCRouter({
 			);
 
 			// Refetch with relations
-			mainBoard = (await ctx.db.query.board.findFirst({
+			mainBoard = await ctx.db.query.board.findFirst({
 				where: eq(board.id, boardId),
 				with: {
 					columns: {
@@ -63,7 +63,7 @@ export const boardRouter = createTRPCRouter({
 						},
 					},
 				},
-			}))!;
+			});
 		}
 
 		return mainBoard;

@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/client";
 import { useConfirm } from "../hooks/use-confirm";
 import { type InviteUserInput, inviteUserSchema } from "../schemas/user.schema";
+import { EmptyState } from "../shared/empty-state";
 import { useUserStore } from "../store/user-store";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -230,126 +231,138 @@ export function UsersTable() {
 				</div>
 			</div>
 
-			<div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
-				<div className="overflow-x-auto">
-					<Table>
-						<TableHeader>
-							<TableRow className="border-border hover:bg-transparent">
-								<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
-									User Name
-								</TableHead>
-								<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
-									Status
-								</TableHead>
-								<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
-									Role
-								</TableHead>
-								<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
-									Joined
-								</TableHead>
-								<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 text-right">
-									Actions
-								</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{isLoading
-								? [1, 2, 3].map((i) => (
-										<TableRow key={i} className="animate-pulse">
-											<TableCell colSpan={5} className="h-20 bg-muted/20" />
-										</TableRow>
-									))
-								: filteredUsers.map((user) => (
-										<TableRow
-											key={user.id}
-											className="group hover:bg-muted/30 transition-colors border-border"
-										>
-											<TableCell className="py-5 px-6">
-												<div className="flex items-center gap-3">
-													<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase">
-														{user.name.substring(0, 2)}
+			{!isLoading && filteredUsers.length === 0 ? (
+				<EmptyState
+					icon={UserPlus}
+					title="No Users Found"
+					description="It looks like there are no users matching your criteria. Try adjusting your search or invite new users to get started."
+					actionButton={{
+						label: "Invite New User",
+						onClick: () => setInviteUserOpen(true),
+					}}
+				/>
+			) : (
+				<div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
+					<div className="overflow-x-auto">
+						<Table>
+							<TableHeader>
+								<TableRow className="border-border hover:bg-transparent">
+									<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+										User Name
+									</TableHead>
+									<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+										Status
+									</TableHead>
+									<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+										Role
+									</TableHead>
+									<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+										Joined
+									</TableHead>
+									<TableHead className="py-5 px-6 font-display font-semibold text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 text-right">
+										Actions
+									</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{isLoading
+									? [1, 2, 3].map((i) => (
+											<TableRow key={i} className="animate-pulse">
+												<TableCell colSpan={5} className="h-20 bg-muted/20" />
+											</TableRow>
+										))
+									: filteredUsers.map((user) => (
+											<TableRow
+												key={user.id}
+												className="group hover:bg-muted/30 transition-colors border-border"
+											>
+												<TableCell className="py-5 px-6">
+													<div className="flex items-center gap-3">
+														<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase">
+															{user.name.substring(0, 2)}
+														</div>
+														<div>
+															<p className="font-bold text-foreground text-sm">
+																{user.name}
+															</p>
+															<p className="text-xs text-muted-foreground opacity-60 font-medium">
+																{user.email}
+															</p>
+														</div>
 													</div>
-													<div>
-														<p className="font-bold text-foreground text-sm">
-															{user.name}
-														</p>
-														<p className="text-xs text-muted-foreground opacity-60 font-medium">
-															{user.email}
-														</p>
+												</TableCell>
+												<TableCell className="py-5 px-6">
+													{getStatusBadge(user.status)}
+												</TableCell>
+												<TableCell className="py-5 px-6">
+													<div className="flex items-center gap-2">
+														<span
+															className={cn(
+																"w-2 h-2 rounded-full",
+																getRoleColor(user.role),
+															)}
+														/>
+														<span className="text-sm font-medium text-foreground capitalize">
+															{user.role || "Member"}
+														</span>
 													</div>
-												</div>
-											</TableCell>
-											<TableCell className="py-5 px-6">
-												{getStatusBadge(user.status)}
-											</TableCell>
-											<TableCell className="py-5 px-6">
-												<div className="flex items-center gap-2">
-													<span
-														className={cn(
-															"w-2 h-2 rounded-full",
-															getRoleColor(user.role),
-														)}
-													/>
-													<span className="text-sm font-medium text-foreground capitalize">
-														{user.role || "Member"}
+												</TableCell>
+												<TableCell className="py-5 px-6">
+													<span className="text-sm font-medium text-muted-foreground">
+														{new Date(user.createdAt).toLocaleDateString()}
 													</span>
-												</div>
-											</TableCell>
-											<TableCell className="py-5 px-6">
-												<span className="text-sm font-medium text-muted-foreground">
-													{new Date(user.createdAt).toLocaleDateString()}
-												</span>
-											</TableCell>
-											<TableCell className="py-5 px-6 text-right">
-												<div className="flex items-center justify-end gap-2">
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => handleEdit(user)}
-														className="h-9 w-9 text-muted-foreground hover:text-primary"
-													>
-														<Edit2 className="h-4 w-4" />
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => handleDelete(user.id)}
-														className="h-9 w-9 text-destructive hover:bg-destructive/10"
-													>
-														<Trash2 className="h-4 w-4" />
-													</Button>
-												</div>
-											</TableCell>
-										</TableRow>
-									))}
-						</TableBody>
-					</Table>
-				</div>
+												</TableCell>
+												<TableCell className="py-5 px-6 text-right">
+													<div className="flex items-center justify-end gap-2">
+														<Button
+															variant="ghost"
+															size="icon"
+															onClick={() => handleEdit(user)}
+															className="h-9 w-9 text-muted-foreground hover:text-primary"
+														>
+															<Edit2 className="h-4 w-4" />
+														</Button>
+														<Button
+															variant="ghost"
+															size="icon"
+															onClick={() => handleDelete(user.id)}
+															className="h-9 w-9 text-destructive hover:bg-destructive/10"
+														>
+															<Trash2 className="h-4 w-4" />
+														</Button>
+													</div>
+												</TableCell>
+											</TableRow>
+										))}
+							</TableBody>
+						</Table>
+					</div>
 
-				<div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/10">
-					<p className="text-xs text-muted-foreground opacity-60 font-medium">
-						Showing {filteredUsers.length} users
-					</p>
-					<div className="flex gap-2">
-						{" "}
-						<Button
-							variant="outline"
-							size="icon"
-							className="h-8 w-8 rounded-lg border-border"
-							disabled
-						>
-							<ChevronLeft className="h-4 w-4" />
-						</Button>
-						<Button
-							variant="outline"
-							size="icon"
-							className="h-8 w-8 rounded-lg border-border"
-						>
-							<ChevronRight className="h-4 w-4" />
-						</Button>
+					<div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/10">
+						<p className="text-xs text-muted-foreground opacity-60 font-medium">
+							Showing {filteredUsers.length} users
+						</p>
+						<div className="flex gap-2">
+							{" "}
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-8 w-8 rounded-lg border-border"
+								disabled
+							>
+								<ChevronLeft className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-8 w-8 rounded-lg border-border"
+							>
+								<ChevronRight className="h-4 w-4" />
+							</Button>
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 
 			<Dialog
 				open={isInviteUserOpen}

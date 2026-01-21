@@ -5,6 +5,7 @@ import { Tag, User } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { TiptapEditor } from "@/components/editor/tiptap-editor";
 import {
 	type TaskFormValues,
 	taskSchema,
@@ -25,13 +26,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { TiptapEditor } from "@/components/ui/tiptap-editor";
 import { trpc } from "@/trpc/client";
 
 interface TaskDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	boardId: string;
 	columns: { id: string; name: string }[];
 	defaultColumnId?: string;
 	task?: {
@@ -48,7 +47,6 @@ interface TaskDialogProps {
 export function TaskDialog({
 	open,
 	onOpenChange,
-	boardId,
 	columns,
 	defaultColumnId,
 	task,

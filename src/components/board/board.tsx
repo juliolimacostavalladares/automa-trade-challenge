@@ -142,7 +142,6 @@ export function Board() {
 			<TaskDialog
 				open={taskDialogOpen}
 				onOpenChange={setTaskDialogOpen}
-				boardId={boardId}
 				columns={columns.map((c) => ({ id: c.id, name: c.name }))}
 				defaultColumnId={selectedColumnId}
 				task={selectedTask as never}

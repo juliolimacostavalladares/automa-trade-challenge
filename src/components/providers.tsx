@@ -2,7 +2,7 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type * as React from "react";
-import { GlobalConfirmDialog } from "@/components/ui/global-confirm-dialog";
+import { GlobalConfirmDialog } from "@/components/confirm/global-confirm-dialog";
 import TRPCProvider from "@/trpc/Provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
