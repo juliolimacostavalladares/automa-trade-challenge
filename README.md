@@ -37,8 +37,11 @@ docker-compose up -d
 
 # 3. Configure o .env
 # Crie um arquivo .env na raiz com:
-DATABASE_URL="postgresql://juliolima:password@localhost:5432/taskflow"
-BETTER_AUTH_SECRET=um_texto_aleatorio_qualquer
+DATABASE_URL="postgresql://postgres:password@localhost:5432/challenge_db"
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=challenge_db
+BETTER_AUTH_SECRET=postgresql://juliolima:password@localhost:5432/taskflow
 BETTER_AUTH_URL=http://localhost:3000
 GOOGLE_GENERATIVE_AI_API_KEY=sua_chave_do_gemini
 ```
