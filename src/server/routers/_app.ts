@@ -4,6 +4,7 @@ import {
 	mergeRouters,
 	publicProcedure,
 } from "../../trpc/init";
+import { aiRouter } from "./ai.router";
 import { boardRouter } from "./board.router";
 import { taskRouter } from "./task.router";
 import { userRouter } from "./user.router";
@@ -27,6 +28,7 @@ export const appRouter = mergeRouters(
 	boardRouter,
 	taskRouter,
 	userRouter,
+	aiRouter,
 );
 
 export type AppRouter = typeof appRouter;

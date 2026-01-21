@@ -17,18 +17,28 @@ import {
 	List,
 	ListOrdered,
 	Quote,
+	Sparkles,
 	Strikethrough,
 } from "lucide-react";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { cn } from "@/lib/utils";
 
 interface TiptapEditorProps {
 	content: string;
 	onChange: (content: string) => void;
+	onAIRequest?: () => void;
+	isAILoading?: boolean;
 }
 
-export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
+export function TiptapEditor({
+	content,
+	onChange,
+	onAIRequest,
+	isAILoading,
+}: TiptapEditorProps) {
 	const editor = useEditor({
 		extensions: [
 			StarterKit.configure({
@@ -163,6 +173,26 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 				>
 					<Code className="h-4 w-4" />
 				</Toggle>
+				{onAIRequest && (
+					<>
+						<Separator orientation="vertical" className="h-4 mx-1" />
+						<Button
+							type="button"
+							variant="ghost"
+							size="sm"
+							onClick={onAIRequest}
+							disabled={isAILoading}
+							className="h-8 px-2 gap-1.5 text-primary hover:text-primary hover:bg-primary/10"
+						>
+							<Sparkles
+								className={cn("h-4 w-4", isAILoading && "animate-pulse")}
+							/>
+							<span className="text-xs font-bold">
+								{isAILoading ? "Generating..." : "AI Help"}
+							</span>
+						</Button>
+					</>
+				)}
 			</div>
 
 			<EditorContent editor={editor} />

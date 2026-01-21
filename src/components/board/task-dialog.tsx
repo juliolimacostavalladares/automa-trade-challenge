@@ -115,6 +115,28 @@ export function TaskDialog({
 		},
 	});
 
+	const generateAI = trpc.generateDescription.useMutation({
+		onSuccess: (data) => {
+			setValue("description", data.description);
+			toast.success("AI description generated!");
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const handleAIRequest = () => {
+		const title = getValues("title");
+		if (!title) {
+			toast.error("Please enter a title first so AI has context.");
+			return;
+		}
+		generateAI.mutate({
+			title,
+			currentDescription: getValues("description"),
+		});
+	};
+
 	const onSubmit = (data: TaskFormValues) => {
 		const payload = {
 			...data,
@@ -172,6 +194,8 @@ export function TaskDialog({
 								<TiptapEditor
 									content={watch("description") || ""}
 									onChange={(html) => setValue("description", html)}
+									onAIRequest={handleAIRequest}
+									isAILoading={generateAI.isPending}
 								/>
 							</div>
 						</div>
