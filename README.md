@@ -2,6 +2,8 @@
 
 Fala! Esse é o **TaskFlow**, uma aplicação de gerenciamento de tarefas focada em produtividade e simplicidade. O projeto foi construído usando a **T3 Stack**, garantindo que tudo seja rápido, tipado e seguro.
 
+Projeto no ar: https://automa-trade-challenge.vercel.app/
+
 ---
 
 ## 🛠️ O que tem no projeto?
