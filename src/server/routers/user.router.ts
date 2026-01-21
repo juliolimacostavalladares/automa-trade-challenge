@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server"; // Import TRPCError
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { user as userTable } from "../../db/schema";
@@ -28,6 +29,24 @@ export const userRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			if (ctx.session.user.email === input.email) {
+				throw new TRPCError({
+					code: "BAD_REQUEST",
+					message: "You cannot invite yourself.",
+				});
+			}
+
+			const existingUser = await ctx.db.query.user.findFirst({
+				where: (userTable, { eq }) => eq(userTable.email, input.email),
+			});
+
+			if (existingUser) {
+				throw new TRPCError({
+					code: "CONFLICT",
+					message: "User with this email has already been invited.",
+				});
+			}
+
 			const newUser = await ctx.db
 				.insert(userTable)
 				.values({

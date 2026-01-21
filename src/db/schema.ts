@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { type InferSelectModel, relations } from "drizzle-orm";
 import {
 	index,
 	integer,
@@ -32,6 +32,8 @@ export const user = pgTable("user", {
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
+
+export type User = InferSelectModel<typeof user>;
 
 export const session = pgTable(
 	"session",

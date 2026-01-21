@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { InferSelectModel } from "drizzle-orm";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -13,14 +12,14 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useConfirm } from "@/components/hooks/use-confirm";
-import {
-	type InviteUserInput,
-	inviteUserSchema,
-} from "@/components/schemas/user.schema";
-import { useUserStore } from "@/components/store/user-store";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import type { User } from "@/db/schema";
+import { cn } from "@/lib/utils";
+import { trpc } from "@/trpc/client";
+import { useConfirm } from "../hooks/use-confirm";
+import { type InviteUserInput, inviteUserSchema } from "../schemas/user.schema";
+import { useUserStore } from "../store/user-store";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -28,15 +27,15 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "../ui/dialog";
+import { Input } from "../ui/input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "../ui/select";
 import {
 	Table,
 	TableBody,
@@ -44,12 +43,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
-import type { user } from "@/db/schema";
-import { cn } from "@/lib/utils";
-import { trpc } from "@/trpc/client";
+} from "../ui/table";
 
-type User = InferSelectModel<typeof user>;
 type ClientSideUser = Omit<User, "createdAt" | "updatedAt"> & {
 	createdAt: string;
 	updatedAt: string;
