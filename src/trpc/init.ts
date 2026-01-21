@@ -43,3 +43,10 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
 		},
 	});
 });
+
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+	if (ctx.session.user.role !== "admin") {
+		throw new Error("Forbidden: Admin access required");
+	}
+	return next({ ctx });
+});

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { board, boardColumn } from "../../db/schema";
 import { createTRPCRouter, protectedProcedure } from "../../trpc/init";
@@ -72,6 +72,18 @@ export const boardRouter = createTRPCRouter({
 	createColumn: protectedProcedure
 		.input(z.object({ boardId: z.string(), name: z.string() }))
 		.mutation(async ({ ctx, input }) => {
+			// Verify board ownership
+			const userBoard = await ctx.db.query.board.findFirst({
+				where: and(
+					eq(board.id, input.boardId),
+					eq(board.userId, ctx.session.user.id),
+				),
+			});
+
+			if (!userBoard) {
+				throw new Error("Forbidden: Board access denied");
+			}
+
 			const columns = await ctx.db.query.boardColumn.findMany({
 				where: eq(boardColumn.boardId, input.boardId),
 			});
@@ -97,6 +109,16 @@ export const boardRouter = createTRPCRouter({
 	updateColumn: protectedProcedure
 		.input(z.object({ id: z.string(), name: z.string() }))
 		.mutation(async ({ ctx, input }) => {
+			// Verify column belongs to user board
+			const column = await ctx.db.query.boardColumn.findFirst({
+				where: eq(boardColumn.id, input.id),
+				with: { board: true },
+			});
+
+			if (!column || column.board.userId !== ctx.session.user.id) {
+				throw new Error("Forbidden: Column access denied");
+			}
+
 			const updated = await ctx.db
 				.update(boardColumn)
 				.set({ name: input.name, updatedAt: new Date() })
@@ -108,6 +130,16 @@ export const boardRouter = createTRPCRouter({
 	deleteColumn: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
+			// Verify column belongs to user board
+			const column = await ctx.db.query.boardColumn.findFirst({
+				where: eq(boardColumn.id, input.id),
+				with: { board: true },
+			});
+
+			if (!column || column.board.userId !== ctx.session.user.id) {
+				throw new Error("Forbidden: Column access denied");
+			}
+
 			await ctx.db.delete(boardColumn).where(eq(boardColumn.id, input.id));
 			return { success: true };
 		}),
