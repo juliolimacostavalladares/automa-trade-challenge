@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { InferSelectModel } from "drizzle-orm";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -44,8 +45,15 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import type { user } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/client";
+
+type User = InferSelectModel<typeof user>;
+type ClientSideUser = Omit<User, "createdAt" | "updatedAt"> & {
+	createdAt: string;
+	updatedAt: string;
+};
 
 export function UsersTable() {
 	const utils = trpc.useUtils();
@@ -54,7 +62,7 @@ export function UsersTable() {
 	const users = usersData || [];
 
 	const [searchQuery, setSearchQuery] = useState("");
-	const [selectedUser, setSelectedUser] = useState<unknown | null>(null);
+	const [selectedUser, setSelectedUser] = useState<ClientSideUser | null>(null);
 	const { isInviteUserOpen, setInviteUserOpen } = useUserStore();
 
 	const filteredUsers = users.filter(
@@ -128,7 +136,7 @@ export function UsersTable() {
 		}
 	};
 
-	const handleEdit = (user: any) => {
+	const handleEdit = (user: ClientSideUser) => {
 		setSelectedUser(user);
 		reset({
 			name: user.name,
