@@ -1,7 +1,6 @@
 "use client";
 
-import { Bell, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
 import { trpc } from "@/trpc/client";
 
 export function Header() {

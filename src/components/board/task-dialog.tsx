@@ -20,6 +20,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { TiptapEditor } from "@/components/ui/tiptap-editor";
 import { trpc } from "@/trpc/client";
 
 interface TaskDialogProps {
@@ -157,11 +158,9 @@ export function TaskDialog({
 								>
 									Description
 								</Label>
-								<textarea
-									id="description"
-									{...register("description")}
-									placeholder="Add a detailed description..."
-									className="flex-1 w-full min-h-50 resize-none bg-transparent border-none focus:outline-none text-base leading-relaxed placeholder:text-muted-foreground/40"
+								<TiptapEditor
+									content={watch("description") || ""}
+									onChange={(html) => setValue("description", html)}
 								/>
 							</div>
 						</div>

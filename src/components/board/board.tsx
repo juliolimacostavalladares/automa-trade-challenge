@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BoardColumn } from "./components/board-column";
-import { type Task, TaskCard } from "./components/task-card";
+import { TaskCard } from "./components/task-card";
 import { useBoardLogic } from "./hooks/use-board-logic";
 import { TaskDialog } from "./task-dialog";
 

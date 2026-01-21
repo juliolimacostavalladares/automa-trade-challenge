@@ -1,6 +1,6 @@
 import { and, eq, gt, gte, lt, lte, sql } from "drizzle-orm";
 import { z } from "zod";
-import { board, boardColumn, task } from "../../db/schema";
+import { boardColumn, task } from "../../db/schema";
 import { createTRPCRouter, protectedProcedure } from "../../trpc/init";
 
 export const taskRouter = createTRPCRouter({

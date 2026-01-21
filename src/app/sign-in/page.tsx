@@ -1,9 +1,8 @@
 "use client";
 
 import { CheckCircle2, Moon, Sun } from "lucide-react";
-import Image from "next/image";
 import { useTheme } from "next-themes";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { ErrorBoundary } from "@/components/hoc/error-boundary";
 import { Button } from "@/components/ui/button";
