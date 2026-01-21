@@ -13,14 +13,15 @@ export const aiRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+			const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 			const model = genAI.getGenerativeModel({ model: modelName });
 
 			const prompt = `        You are a productivity expert. Help me write a professional and concise task description for a task management app.
         Task Title: ${input.title}
         ${input.currentDescription ? `Current context/notes: ${input.currentDescription}` : ""}
-        
+
         Requirements:
+        - Detect the language of the Task Title and respond in that SAME language.
         - Output ONLY the description in HTML format (suitable for Tiptap editor).
         - Use <ul> or <ol> for lists if necessary.
         - Use <p> for paragraphs.
