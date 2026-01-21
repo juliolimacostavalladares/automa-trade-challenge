@@ -14,7 +14,7 @@ export function Greeting() {
 			<p className="text-muted-foreground text-lg font-medium opacity-80">
 				Hello, {firstName}!
 			</p>
-			<h1 className="font-display font-bold text-5xl text-foreground mt-1 leading-tight">
+			<h1 className="font-display font-bold text-3xl sm:text-5xl text-foreground mt-1 leading-tight">
 				{taskCount === 0 ? (
 					<>
 						You have no <span className="text-primary">tasks</span> today

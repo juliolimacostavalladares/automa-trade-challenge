@@ -157,7 +157,7 @@ export function TaskDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[80vh] flex flex-col sm:max-w-4xl">
+			<DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[100dvh] sm:h-[80vh] flex flex-col sm:max-w-4xl sm:rounded-3xl">
 				<DialogTitle className="sr-only">
 					{isEditing ? "Edit Task" : "Create New Task"}
 				</DialogTitle>
@@ -166,10 +166,10 @@ export function TaskDialog({
 				</DialogDescription>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-1 flex-col md:flex-row h-full"
+					className="flex flex-1 flex-col md:flex-row min-h-0"
 				>
-					<div className="flex-1 p-6 md:p-8 flex flex-col overflow-y-auto">
-						<div className="space-y-6 flex-1">
+					<div className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
+						<div className="p-6 md:p-8 space-y-6 flex-1">
 							<div>
 								<Input
 									id="title"
@@ -184,7 +184,7 @@ export function TaskDialog({
 								)}
 							</div>
 
-							<div className="space-y-2 h-full flex flex-col">
+							<div className="space-y-2">
 								<Label
 									htmlFor="description"
 									className="text-sm font-semibold text-muted-foreground uppercase tracking-wider"
@@ -198,114 +198,218 @@ export function TaskDialog({
 									isAILoading={generateAI.isPending}
 								/>
 							</div>
+
+							{/* Mobile-only settings stack */}
+							<div className="md:hidden space-y-6 pt-6 border-t border-border/50">
+								<div className="grid grid-cols-2 gap-4">
+									<div className="space-y-1.5">
+										<Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Status
+										</Label>
+										<Select
+											onValueChange={(val) => setValue("columnId", val)}
+											defaultValue={getValues("columnId")}
+											value={watch("columnId")}
+										>
+											<SelectTrigger className="w-full bg-background border-border/60 rounded-xl">
+												<SelectValue placeholder="Status" />
+											</SelectTrigger>
+											<SelectContent>
+												{columns.map((col) => (
+													<SelectItem key={col.id} value={col.id}>
+														{col.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									<div className="space-y-1.5">
+										<Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Priority
+										</Label>
+										<Select
+											onValueChange={(val) =>
+												setValue("priority", val as "low" | "medium" | "high")
+											}
+											defaultValue={getValues("priority")}
+											value={watch("priority")}
+										>
+											{" "}
+											<SelectTrigger className="w-full bg-background border-border/60 rounded-xl">
+												<SelectValue placeholder="Priority" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="low">Low</SelectItem>
+												<SelectItem value="medium">Medium</SelectItem>
+												<SelectItem value="high">High</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+								</div>
+
+								<div className="grid grid-cols-2 gap-4">
+									<div className="space-y-1.5">
+										<Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Assignee
+										</Label>
+										<Select
+											onValueChange={(val) => setValue("assigneeId", val)}
+											defaultValue={getValues("assigneeId")}
+											value={watch("assigneeId")}
+										>
+											<SelectTrigger className="w-full bg-background border-border/60 rounded-xl">
+												<div className="flex items-center gap-2">
+													<User className="h-3.5 w-3.5 text-muted-foreground" />
+													<SelectValue placeholder="Assignee" />
+												</div>
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="unassigned">Unassigned</SelectItem>
+												{users?.map((user) => (
+													<SelectItem key={user.id} value={user.id}>
+														{user.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									<div className="space-y-1.5">
+										<Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Label
+										</Label>
+										<div className="relative">
+											<Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+											<Input
+												{...register("label")}
+												placeholder="Label"
+												className="pl-9 bg-background border-border/60 rounded-xl h-10 text-sm"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 
-						<div className="flex justify-end gap-2 mt-6 pt-4 border-t md:hidden">
+						{/* Sticky footer for mobile buttons */}
+						<div className="md:hidden sticky bottom-0 p-4 bg-background border-t border-border flex gap-3 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
 							<Button
 								type="button"
 								variant="ghost"
 								onClick={() => onOpenChange(false)}
+								className="flex-1 rounded-xl h-12"
 							>
 								Cancel
 							</Button>
-							<Button type="submit" disabled={isPending}>
+							<Button
+								type="submit"
+								disabled={isPending}
+								className="flex-1 rounded-xl h-12 shadow-lg shadow-primary/20"
+							>
 								{isPending
 									? isEditing
 										? "Saving..."
 										: "Creating..."
 									: isEditing
-										? "Save Changes"
-										: "Create Task"}
+										? "Save"
+										: "Create"}
 							</Button>
 						</div>
 					</div>
 
-					<div className="w-full md:w-80 bg-muted/30 border-l border-border p-6 space-y-6 overflow-y-auto">
-						<div className="space-y-4">
-							<div className="space-y-1.5">
-								<Label className="text-xs font-semibold text-muted-foreground uppercase">
-									Status
-								</Label>
-								<Select
-									onValueChange={(val) => setValue("columnId", val)}
-									defaultValue={getValues("columnId")}
-									value={watch("columnId")}
-								>
-									<SelectTrigger className="w-full bg-background border-border">
-										<SelectValue placeholder="Select status" />
-									</SelectTrigger>
-									<SelectContent>
-										{columns.map((col) => (
-											<SelectItem key={col.id} value={col.id}>
-												{col.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+					{/* Desktop Sidebar */}
+					<div className="hidden md:flex w-80 bg-muted/30 border-l border-border p-6 flex-col overflow-y-auto custom-scrollbar">
+						<div className="space-y-6 flex-1">
+							<div className="space-y-4">
+								<div className="space-y-1.5">
+									<Label className="text-xs font-semibold text-muted-foreground uppercase">
+										Status
+									</Label>
+									<Select
+										onValueChange={(val) => setValue("columnId", val)}
+										defaultValue={getValues("columnId")}
+										value={watch("columnId")}
+									>
+										<SelectTrigger className="w-full bg-background border-border">
+											<SelectValue placeholder="Select status" />
+										</SelectTrigger>
+										<SelectContent>
+											{columns.map((col) => (
+												<SelectItem key={col.id} value={col.id}>
+													{col.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
 
-							<div className="space-y-1.5">
-								<Label className="text-xs font-semibold text-muted-foreground uppercase">
-									Priority
-								</Label>
-								<Select
-									onValueChange={(val: any) => setValue("priority", val)}
-									defaultValue={getValues("priority")}
-									value={watch("priority")}
-								>
-									<SelectTrigger className="w-full bg-background border-border">
-										<SelectValue placeholder="Select priority" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="low">Low</SelectItem>
-										<SelectItem value="medium">Medium</SelectItem>
-										<SelectItem value="high">High</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
+								<div className="space-y-1.5">
+									<Label className="text-xs font-semibold text-muted-foreground uppercase">
+										Priority
+									</Label>
+									<Select
+										onValueChange={(val) =>
+											setValue("priority", val as "low" | "medium" | "high")
+										}
+										defaultValue={getValues("priority")}
+										value={watch("priority")}
+									>
+										{" "}
+										<SelectTrigger className="w-full bg-background border-border">
+											<SelectValue placeholder="Select priority" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="low">Low</SelectItem>
+											<SelectItem value="medium">Medium</SelectItem>
+											<SelectItem value="high">High</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
 
-							<div className="space-y-1.5">
-								<Label className="text-xs font-semibold text-muted-foreground uppercase">
-									Assignee
-								</Label>
-								<Select
-									onValueChange={(val) => setValue("assigneeId", val)}
-									defaultValue={getValues("assigneeId")}
-									value={watch("assigneeId")}
-								>
-									<SelectTrigger className="w-full bg-background border-border">
-										<div className="flex items-center gap-2">
-											<User className="h-4 w-4 text-muted-foreground" />
-											<SelectValue placeholder="Unassigned" />
-										</div>
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="unassigned">Unassigned</SelectItem>
-										{users?.map((user) => (
-											<SelectItem key={user.id} value={user.id}>
-												{user.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+								<div className="space-y-1.5">
+									<Label className="text-xs font-semibold text-muted-foreground uppercase">
+										Assignee
+									</Label>
+									<Select
+										onValueChange={(val) => setValue("assigneeId", val)}
+										defaultValue={getValues("assigneeId")}
+										value={watch("assigneeId")}
+									>
+										<SelectTrigger className="w-full bg-background border-border">
+											<div className="flex items-center gap-2">
+												<User className="h-4 w-4 text-muted-foreground" />
+												<SelectValue placeholder="Unassigned" />
+											</div>
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="unassigned">Unassigned</SelectItem>
+											{users?.map((user) => (
+												<SelectItem key={user.id} value={user.id}>
+													{user.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
 
-							<div className="space-y-1.5">
-								<Label className="text-xs font-semibold text-muted-foreground uppercase">
-									Label
-								</Label>
-								<div className="relative">
-									<Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-									<Input
-										{...register("label")}
-										placeholder="e.g. Bug"
-										className="pl-9 bg-background border-border"
-									/>
+								<div className="space-y-1.5">
+									<Label className="text-xs font-semibold text-muted-foreground uppercase">
+										Label
+									</Label>
+									<div className="relative">
+										<Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+										<Input
+											{...register("label")}
+											placeholder="e.g. Bug"
+											className="pl-9 bg-background border-border"
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
 
-						<div className="hidden md:flex flex-col gap-2 pt-6 mt-auto">
+						<div className="pt-6 mt-auto">
 							<Button type="submit" disabled={isPending} className="w-full">
 								{isPending
 									? isEditing
@@ -319,7 +423,7 @@ export function TaskDialog({
 								type="button"
 								variant="ghost"
 								onClick={() => onOpenChange(false)}
-								className="w-full"
+								className="w-full mt-2"
 							>
 								Cancel
 							</Button>

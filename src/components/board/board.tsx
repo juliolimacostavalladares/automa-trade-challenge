@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { BoardColumn } from "./components/board-column";
 import { TaskCard } from "./components/task-card";
 import { useBoardLogic } from "./hooks/use-board-logic";
@@ -58,10 +59,11 @@ export function Board() {
 			onDragStart={onDragStart}
 			onDragOver={onDragOver}
 			onDragEnd={onDragEnd}
+			autoScroll
 		>
-			<div className="flex flex-col h-full space-y-4 space-x-1">
-				<div className="flex items-center justify-between w-full px-1 gap-4">
-					<div className="w-full max-w-sm">
+			<div className="flex flex-col h-full space-y-4">
+				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full px-1 gap-4">
+					<div className="w-full sm:max-w-sm">
 						<Input
 							startIcon={<Search className="h-4 w-4" />}
 							placeholder="Search tasks..."
@@ -70,27 +72,34 @@ export function Board() {
 							className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
 						/>
 					</div>
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
 						<Button
 							variant="outline"
 							onClick={() => setCreateColumnOpen(true)}
-							className="h-12 px-6 rounded-2xl gap-2 border-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary transition-all active:scale-95 whitespace-nowrap font-bold"
+							className="flex-1 sm:flex-none h-12 px-4 sm:px-6 rounded-2xl gap-2 border-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary transition-all active:scale-95 whitespace-nowrap font-bold"
 						>
 							<Plus className="h-5 w-5" />
-							Add Column
+							<span className="hidden xs:inline">Add Column</span>
+							<span className="xs:hidden">Column</span>
 						</Button>
 						<Button
 							onClick={() => handleAddTask()}
-							className="bg-primary text-primary-foreground h-12 px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
+							className="flex-1 sm:flex-none bg-primary text-primary-foreground h-12 px-4 sm:px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
 						>
 							<Plus className="h-5 w-5" />
-							Add New Task
+							<span className="hidden xs:inline">Add New Task</span>
+							<span className="xs:hidden">Task</span>
 						</Button>
 					</div>
 				</div>
 
-				<div className="flex-1 min-h-0 bg-muted/50 rounded-3xl p-6 overflow-x-auto border border-border/50 shadow-inner">
-					<div className="flex h-full gap-6 items-start">
+				<div
+					className={cn(
+						"flex-1 min-h-0 bg-muted/50 rounded-3xl p-4 sm:p-6 overflow-x-auto border border-border/50 shadow-inner snap-mandatory scroll-smooth",
+						activeDragTask ? "snap-none" : "snap-x",
+					)}
+				>
+					<div className="flex h-full gap-4 sm:gap-6 items-start">
 						{columns.map((col) => (
 							<BoardColumn
 								key={col.id}
@@ -104,7 +113,7 @@ export function Board() {
 							/>
 						))}
 
-						<div className="w-80 shrink-0">
+						<div className="w-[85vw] xs:w-80 shrink-0 snap-center">
 							<Button
 								variant="outline"
 								className="w-full h-12 border-dashed border-2 bg-background/40 hover:bg-background/80 hover:border-primary/50 transition-all rounded-2xl text-muted-foreground hover:text-primary"
@@ -136,7 +145,7 @@ export function Board() {
 				boardId={boardId}
 				columns={columns.map((c) => ({ id: c.id, name: c.name }))}
 				defaultColumnId={selectedColumnId}
-				task={selectedTask as any}
+				task={selectedTask as never}
 			/>
 
 			<Dialog open={createColumnOpen} onOpenChange={setCreateColumnOpen}>

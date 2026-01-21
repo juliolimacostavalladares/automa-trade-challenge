@@ -3,6 +3,7 @@ import {
 	type DragOverEvent,
 	type DragStartEvent,
 	PointerSensor,
+	TouchSensor,
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
@@ -34,6 +35,12 @@ export function useBoardDnD({
 		useSensor(PointerSensor, {
 			activationConstraint: {
 				distance: 8,
+			},
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 150,
+				tolerance: 5,
 			},
 		}),
 	);

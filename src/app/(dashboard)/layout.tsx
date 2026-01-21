@@ -17,7 +17,7 @@ export default function DashboardLayout({
 				<main className="flex-1 flex flex-col overflow-hidden">
 					<Header />
 
-					<div className="flex-1 overflow-y-auto px-8 pb-12 custom-scrollbar">
+					<div className="flex-1 overflow-y-auto px-4 sm:px-8 pb-12 custom-scrollbar">
 						{children}
 					</div>
 				</main>

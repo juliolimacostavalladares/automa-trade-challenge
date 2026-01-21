@@ -4,14 +4,13 @@ import {
 	CheckCircle2,
 	LayoutDashboard,
 	LogOut,
-	Menu,
 	SquareKanban,
 	Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { useAuth } from "@/components/hooks/use-auth";
+import { useUIStore } from "@/components/store/ui-store";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -19,7 +18,6 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +30,7 @@ const navItems = [
 export function Sidebar() {
 	const { signOut } = useAuth();
 	const activePath = usePathname();
-	const [open, setOpen] = useState(false);
+	const { isMobileMenuOpen, setMobileMenuOpen } = useUIStore();
 
 	const SidebarContent = () => (
 		<div className="flex flex-col h-full p-6 bg-card transition-colors duration-300">
@@ -53,7 +51,7 @@ export function Sidebar() {
 						<Link
 							key={item.label}
 							href={item.href}
-							onClick={() => setOpen(false)}
+							onClick={() => setMobileMenuOpen(false)}
 							className={cn(
 								"flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
 								isActive
@@ -83,14 +81,9 @@ export function Sidebar() {
 
 	return (
 		<>
-			{/* Mobile Sidebar (Sheet-like using Dialog) */}
-			<div className="lg:hidden fixed top-4 left-4 z-50">
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogTrigger asChild>
-						<Button variant="outline" size="icon" className="h-10 w-10 bg-card">
-							<Menu className="h-6 w-6" />
-						</Button>
-					</DialogTrigger>
+			{/* Mobile Sidebar */}
+			<div className="lg:hidden">
+				<Dialog open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
 					<DialogContent
 						side="left"
 						className="p-0 w-72 h-screen sm:max-w-72 border-r rounded-none"

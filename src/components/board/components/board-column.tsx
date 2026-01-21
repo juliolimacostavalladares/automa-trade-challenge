@@ -46,7 +46,7 @@ export function BoardColumn({
 	return (
 		<div
 			ref={setNodeRef}
-			className="w-80 shrink-0 flex flex-col h-full max-h-full rounded-2xl bg-background/60 backdrop-blur-sm p-3 border border-border/40 shadow-sm"
+			className="w-[85vw] xs:w-80 shrink-0 flex flex-col h-full max-h-full rounded-2xl bg-background/60 backdrop-blur-sm p-3 border border-border/40 shadow-sm snap-center"
 		>
 			<div className="flex items-center justify-between mb-3 px-2 pt-2">
 				<div className="flex items-center gap-2">

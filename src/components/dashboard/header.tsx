@@ -1,13 +1,25 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { Menu, Users } from "lucide-react";
+import { useUIStore } from "@/components/store/ui-store";
+import { Button } from "@/components/ui/button";
 import { trpc } from "@/trpc/client";
 
 export function Header() {
 	const { data: user } = trpc.getProfile.useQuery();
+	const { setMobileMenuOpen } = useUIStore();
 
 	return (
-		<header className="h-20 flex items-center justify-end px-8 bg-transparent">
+		<header className="h-20 flex items-center justify-between lg:justify-end px-6 sm:px-8 bg-transparent">
+			<Button
+				variant="ghost"
+				size="icon"
+				onClick={() => setMobileMenuOpen(true)}
+				className="lg:hidden h-10 w-10 text-muted-foreground"
+			>
+				<Menu className="h-6 w-6" />
+			</Button>
+
 			<div className="flex items-center gap-6">
 				<div className="flex items-center gap-3">
 					<div className="text-right hidden sm:block">

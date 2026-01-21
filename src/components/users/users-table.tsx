@@ -54,7 +54,7 @@ export function UsersTable() {
 	const users = usersData || [];
 
 	const [searchQuery, setSearchQuery] = useState("");
-	const [selectedUser, setSelectedUser] = useState<any | null>(null);
+	const [selectedUser, setSelectedUser] = useState<unknown | null>(null);
 	const { isInviteUserOpen, setInviteUserOpen } = useUserStore();
 
 	const filteredUsers = users.filter(
@@ -206,8 +206,8 @@ export function UsersTable() {
 			</section>
 
 			<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-				<div className="flex justify-between items-center gap-4 w-full lg:w-auto flex-1 max-2-xl">
-					<div className="flex-1 max-w-2xl">
+				<div className="flex items-center gap-4 w-full lg:w-auto flex-1 max-w-2xl">
+					<div className="flex-1">
 						<Input
 							startIcon={<Search className="h-5 w-5" />}
 							className="w-full bg-card border-none rounded-2xl py-6 focus-visible:ring-2 focus-visible:ring-primary/20 placeholder:text-muted-foreground/40 text-sm transition-all shadow-sm"
@@ -215,13 +215,14 @@ export function UsersTable() {
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
-					</div>{" "}
+					</div>
 					<Button
 						onClick={() => setInviteUserOpen(true)}
-						className="bg-primary text-primary-foreground h-12 px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
+						className="bg-primary text-primary-foreground h-12 px-4 xs:px-6 rounded-2xl gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap font-bold"
 					>
 						<UserPlus className="h-5 w-5" />
-						Invite New User
+						<span className="hidden xs:inline">Invite New User</span>
+						<span className="xs:hidden">Invite</span>
 					</Button>
 				</div>
 			</div>
