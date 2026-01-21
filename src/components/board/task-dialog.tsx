@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar, Tag, User } from "lucide-react";
+import { Tag, User } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,7 +34,6 @@ interface TaskDialogProps {
 		description: string | null;
 		priority: "low" | "medium" | "high" | null;
 		label: string | null;
-		dueDate: string | null;
 		columnId: string;
 		assignee?: { id: string } | null;
 	};
@@ -79,9 +78,6 @@ export function TaskDialog({
 					priority: task.priority || "medium",
 					label: task.label || "",
 					columnId: task.columnId,
-					dueDate: task.dueDate
-						? new Date(task.dueDate).toISOString().split("T")[0]
-						: "",
 					assigneeId: task.assignee?.id || "unassigned",
 				});
 			} else {
@@ -91,7 +87,6 @@ export function TaskDialog({
 					priority: "medium",
 					label: "",
 					columnId: defaultColumnId || columns[0]?.id || "",
-					dueDate: "",
 					assigneeId: "unassigned",
 				});
 			}
@@ -101,6 +96,8 @@ export function TaskDialog({
 	const createTask = trpc.createTask.useMutation({
 		onSuccess: () => {
 			utils.getMainBoard.invalidate();
+			toast.success("Task created");
+			onOpenChange(false);
 		},
 	});
 
@@ -115,7 +112,6 @@ export function TaskDialog({
 	const onSubmit = (data: TaskFormValues) => {
 		const payload = {
 			...data,
-			dueDate: data.dueDate || undefined,
 			assigneeId:
 				data.assigneeId === "unassigned" ? undefined : data.assigneeId,
 		};
@@ -123,7 +119,6 @@ export function TaskDialog({
 			updateTask.mutate({
 				id: task.id,
 				...payload,
-				dueDate: data.dueDate || null,
 			});
 		} else {
 			createTask.mutate(payload);
@@ -265,20 +260,6 @@ export function TaskDialog({
 										{...register("label")}
 										placeholder="e.g. Bug"
 										className="pl-9 bg-background border-border"
-									/>
-								</div>
-							</div>
-
-							<div className="space-y-1.5">
-								<Label className="text-xs font-semibold text-muted-foreground uppercase">
-									Due Date
-								</Label>
-								<div className="relative">
-									<Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-									<Input
-										type="date"
-										{...register("dueDate")}
-										className="pl-9 bg-background border-border block"
 									/>
 								</div>
 							</div>

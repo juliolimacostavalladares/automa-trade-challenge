@@ -6,7 +6,6 @@ export const taskSchema = z.object({
 	priority: z.enum(["low", "medium", "high"]),
 	label: z.string().optional(),
 	columnId: z.string().min(1, "Column is required"),
-	dueDate: z.string().optional(),
 	assigneeId: z.string().optional(),
 });
 

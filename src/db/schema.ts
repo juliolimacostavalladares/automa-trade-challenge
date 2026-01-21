@@ -151,8 +151,7 @@ export const task = pgTable(
 		order: integer("order").notNull().default(0),
 		priority: priorityEnum("priority").default("medium"),
 		label: text("label"),
-		dueDate: timestamp("due_date"),
-		authorId: text("author_id").references(() => user.id), // Nullable for easier migration
+		authorId: text("author_id").references(() => user.id),
 		assigneeId: text("assignee_id").references(() => user.id, {
 			onDelete: "set null",
 		}),

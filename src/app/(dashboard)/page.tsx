@@ -6,11 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/trpc/client";
 
 export default function DashboardPage() {
-	const { data: tasks } = trpc.getTasks.useQuery();
+	const { data: board } = trpc.getMainBoard.useQuery();
 
-	const totalTasks = tasks?.length || 0;
-	// Mocking other stats for now as we don't have column info in simple getTasks list yet
-	// A real implementation would fetch tasks with column relations or aggregated stats.
+	const allTasks = board?.columns.flatMap((col) => col.tasks) || [];
+	const totalTasks = allTasks.length;
+
+	const completedTasks =
+		board?.columns.find((col) => col.name.toLowerCase() === "done")?.tasks
+			.length || 0;
+
+	const pendingTasks = totalTasks - completedTasks;
 
 	return (
 		<div className="space-y-8 animate-in fade-in duration-500">
@@ -40,7 +45,7 @@ export default function DashboardPage() {
 						<CheckCircle2 className="h-4 w-4 text-green-500" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-3xl font-bold">--</div>
+						<div className="text-3xl font-bold">{completedTasks}</div>
 						<p className="text-xs text-muted-foreground mt-1">
 							Tasks moved to Done
 						</p>
@@ -55,7 +60,7 @@ export default function DashboardPage() {
 						<Clock className="h-4 w-4 text-orange-500" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-3xl font-bold">--</div>
+						<div className="text-3xl font-bold">{pendingTasks}</div>
 						<p className="text-xs text-muted-foreground mt-1">
 							In Progress or To Do
 						</p>
@@ -74,19 +79,26 @@ export default function DashboardPage() {
 				</div>
 				<div className="p-6 pt-0">
 					<div className="space-y-4">
-						{tasks?.slice(0, 5).map((task) => (
-							<div key={task.id} className="flex items-center gap-4">
-								<div className="w-2 h-2 rounded-full bg-primary" />
-								<div className="flex-1 space-y-1">
-									<p className="text-sm font-medium leading-none">
-										{task.title}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										Created on {new Date(task.createdAt).toLocaleDateString()}
-									</p>
+						{[...allTasks]
+							.sort(
+								(a, b) =>
+									new Date(b.createdAt).getTime() -
+									new Date(a.createdAt).getTime(),
+							)
+							.slice(0, 5)
+							.map((task) => (
+								<div key={task.id} className="flex items-center gap-4">
+									<div className="w-2 h-2 rounded-full bg-primary" />
+									<div className="flex-1 space-y-1">
+										<p className="text-sm font-medium leading-none">
+											{task.title}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											Created on {new Date(task.createdAt).toLocaleDateString()}
+										</p>
+									</div>
 								</div>
-							</div>
-						))}
+							))}
 						{totalTasks === 0 && (
 							<p className="text-sm text-muted-foreground">
 								No activity recorded yet.

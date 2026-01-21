@@ -1,4 +1,4 @@
-import { and, eq, gt, gte, lt, lte, ne, sql } from "drizzle-orm";
+import { and, eq, gt, gte, lt, lte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { task } from "../../db/schema";
 import { createTRPCRouter, protectedProcedure } from "../../trpc/init";
@@ -12,7 +12,6 @@ export const taskRouter = createTRPCRouter({
 				description: z.string().optional(),
 				priority: z.enum(["low", "medium", "high"]).optional(),
 				label: z.string().optional(),
-				dueDate: z.string().optional(),
 				assigneeId: z.string().optional(),
 			}),
 		)
@@ -26,7 +25,6 @@ export const taskRouter = createTRPCRouter({
 					description: input.description,
 					priority: input.priority || "medium",
 					label: input.label,
-					dueDate: input.dueDate ? new Date(input.dueDate) : null,
 					assigneeId: input.assigneeId || null,
 					authorId: ctx.session.user.id,
 					createdAt: new Date(),
@@ -45,7 +43,6 @@ export const taskRouter = createTRPCRouter({
 				description: z.string().optional(),
 				priority: z.enum(["low", "medium", "high"]).optional(),
 				label: z.string().optional(),
-				dueDate: z.string().nullable().optional(),
 				columnId: z.string().optional(),
 				order: z.number().optional(),
 				assigneeId: z.string().nullable().optional(),
@@ -54,9 +51,6 @@ export const taskRouter = createTRPCRouter({
 		.mutation(async ({ ctx, input }) => {
 			const { id, ...data } = input;
 			const updateData: any = { ...data, updatedAt: new Date() };
-			if (data.dueDate !== undefined) {
-				updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
-			}
 
 			const updated = await ctx.db
 				.update(task)

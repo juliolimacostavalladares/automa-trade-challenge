@@ -1,4 +1,4 @@
-import { Calendar, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,7 +17,6 @@ export interface Task {
 	description: string | null;
 	priority: "low" | "medium" | "high" | null;
 	label: string | null;
-	dueDate: string | null;
 	order: number;
 	createdAt: string;
 	assignee?: {
@@ -51,13 +50,6 @@ export const TaskCard = memo(function TaskCard({
 }: TaskCardProps) {
 	const priority = task.priority || "medium";
 	const labelColor = task.label ? getLabelColor(task.label) : "";
-
-	const isOverdue = task.dueDate
-		? new Date(task.dueDate) < new Date(new Date().setHours(0, 0, 0, 0))
-		: false;
-	const isDueToday = task.dueDate
-		? new Date(task.dueDate).toDateString() === new Date().toDateString()
-		: false;
 
 	return (
 		<Card
@@ -107,29 +99,6 @@ export const TaskCard = memo(function TaskCard({
 
 			<div className="flex items-center justify-between mt-auto">
 				<div className="flex items-center gap-2">
-					{task.dueDate && (
-						<div
-							className={cn(
-								"flex items-center gap-1.5",
-								isOverdue
-									? "text-red-500 font-bold"
-									: isDueToday
-										? "text-orange-500 font-medium"
-										: "text-muted-foreground",
-							)}
-						>
-							<Calendar className="h-3.5 w-3.5" />
-							<span className="text-[11px]">
-								{isDueToday
-									? "Today"
-									: new Date(task.dueDate).toLocaleDateString(undefined, {
-											month: "short",
-											day: "numeric",
-										})}
-							</span>
-						</div>
-					)}
-
 					{/* Priority Indicator if High */}
 					{priority === "high" && (
 						<div
