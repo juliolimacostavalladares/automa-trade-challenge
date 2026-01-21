@@ -223,7 +223,7 @@ export function TiptapEditor({
 				)}
 			</div>
 
-			<EditorContent editor={editor} className="min-h-[250px]" />
+			<EditorContent editor={editor} className="min-h-62.5" />
 		</div>
 	);
 }

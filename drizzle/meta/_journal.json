@@ -15,6 +15,13 @@
 			"when": 1769028478446,
 			"tag": "0001_nebulous_micromax",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1769034052630,
+			"tag": "0002_steep_bloodstrike",
+			"breakpoints": true
 		}
 	]
 }
