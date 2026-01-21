@@ -13,10 +13,10 @@ export const aiRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+			const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+			const model = genAI.getGenerativeModel({ model: modelName });
 
-			const prompt = `
-        You are a productivity expert. Help me write a professional and concise task description for a task management app.
+			const prompt = `        You are a productivity expert. Help me write a professional and concise task description for a task management app.
         Task Title: ${input.title}
         ${input.currentDescription ? `Current context/notes: ${input.currentDescription}` : ""}
         
