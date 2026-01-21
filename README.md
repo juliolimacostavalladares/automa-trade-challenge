@@ -8,7 +8,7 @@ Projeto com deploy feito e rodando: https://automa-trade-challenge.vercel.app/
 
 ## 🛠️ O que tem no projeto?
 
-O objetivo aqui foi criar algo que não fosse só um "CRUDzinho" básico, mas uma ferramenta que desse gosto de usar.
+O objetivo aqui foi criar algo que não fosse só um "CRUD" básico, mas uma ferramenta que desse gosto de usar.
 
 - **Kanban Completo:** Arraste e solte suas tarefas entre colunas (To Do, In Progress, Done).
 - **IA com Gemini:** Tá sem criatividade? Deixa que a IA escreve a descrição da tarefa pra você com base no título. Ela até detecta se você tá escrevendo em PT-BR ou Inglês!
@@ -42,7 +42,7 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 POSTGRES_DB=challenge_db
 BETTER_AUTH_SECRET=postgresql://juliolima:password@localhost:5432/taskflow
-BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_URL=http://localhost:3000 //Front URL
 GOOGLE_GENERATIVE_AI_API_KEY=sua_chave_do_gemini
 ```
 
