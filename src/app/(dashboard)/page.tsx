@@ -1,100 +1,65 @@
 "use client";
 
-import { CalendarWidget } from "@/components/dashboard/calendar-widget";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { CreateBoardDialog } from "@/components/board/create-board-dialog";
 import { Greeting } from "@/components/dashboard/greeting";
 import { ProjectCard } from "@/components/dashboard/project-card";
-import { TimeTracker } from "@/components/dashboard/time-tracker";
-import { Button } from "@/components/ui/button";
-
+import { UsersTable } from "@/components/users/users-table";
 import { trpc } from "@/trpc/client";
 
-interface Project {
-	title: string;
-	description: string;
-	progress: number;
-	members: number;
-	variant?: "default" | "highlight";
-}
-
 export default function DashboardPage() {
-	const { data: projects, isLoading: isLoadingProjects } =
-		trpc.getProjects.useQuery() as {
-			data: Project[] | undefined;
-			isLoading: boolean;
-		};
-
-	const hasProjects = projects && projects.length > 0;
+	const { data: boards, isLoading: isLoadingBoards } =
+		trpc.getBoards.useQuery();
 
 	return (
-		<div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+		<div className="space-y-8">
 			<Greeting />
 
-			<div className="grid grid-cols-12 gap-8">
-				<div className="col-span-12 lg:col-span-8 space-y-8">
-					{/* Tabs */}
-					<div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-						<Button className="rounded-full px-6 shadow-lg shadow-primary/20">
-							Recently
-						</Button>
-						<Button
-							variant="ghost"
-							className="rounded-full px-6 bg-card text-muted-foreground hover:bg-primary/10"
-						>
-							Today
-						</Button>
-						<Button
-							variant="ghost"
-							className="rounded-full px-6 bg-card text-muted-foreground hover:bg-primary/10"
-						>
-							Upcoming
-						</Button>
-						<Button
-							variant="ghost"
-							className="rounded-full px-6 bg-card text-muted-foreground hover:bg-primary/10"
-						>
-							Later
-						</Button>
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				<div className="lg:col-span-2 space-y-8">
+					<div className="flex items-center justify-between">
+						<h2 className="text-xl font-bold">Your Boards</h2>
+						<CreateBoardDialog />
 					</div>
 
-					{/* Project Grid or Empty State */}
-					{isLoadingProjects ? (
+					{isLoadingBoards ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							{[1, 2].map((i) => (
 								<div
 									key={i}
-									className="h-48 bg-card/50 animate-pulse rounded-3xl"
-								/>
-							))}
-						</div>
-					) : hasProjects ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{projects.map((project) => (
-								<ProjectCard
-									key={project.title}
-									title={project.title}
-									description={project.description}
-									progress={project.progress}
-									members={project.members}
-									variant={project.variant}
+									className="h-48 rounded-xl bg-muted animate-pulse"
 								/>
 							))}
 						</div>
 					) : (
-						<EmptyState
-							title="No projects yet"
-							description="It looks like you haven't created any projects. Start by adding your first task or project to track your progress."
-							actionLabel="Create Project"
-							onAction={() => console.log("Create project clicked")}
-						/>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							{boards?.map((board) => (
+								<Link key={board.id} href={`/boards/${board.id}`}>
+									<ProjectCard
+										title={board.name}
+										description={board.description || "No description"}
+										progress={0} // We can calculate progress later
+										members={0}
+									/>
+								</Link>
+							))}
+							{boards?.length === 0 && (
+								<div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed rounded-xl">
+									No boards found. Create one to get started!
+								</div>
+							)}
+						</div>
 					)}
 
-					<TimeTracker />
+					<div className="pt-8">
+						<h2 className="text-xl font-bold mb-4">Team Members</h2>
+						<UsersTable />
+					</div>
 				</div>
 
-				{/* Right Column - Calendar Widget */}
-				<div className="col-span-12 lg:col-span-4">
-					<CalendarWidget />
+				<div className="space-y-8">
+					{/* Sidebar widgets or similar could go here */}
 				</div>
 			</div>
 		</div>

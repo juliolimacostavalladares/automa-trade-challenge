@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
 
 const geistSans = Geist({
@@ -40,6 +41,7 @@ export default function RootLayout({
 				suppressHydrationWarning
 			>
 				<Providers>{children}</Providers>
+				<Toaster richColors closeButton position="top-right" />
 			</body>
 		</html>
 	);

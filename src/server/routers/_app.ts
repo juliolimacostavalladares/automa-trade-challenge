@@ -1,11 +1,14 @@
 import { z } from "zod";
 import {
 	createTRPCRouter,
-	protectedProcedure,
+	mergeRouters,
 	publicProcedure,
 } from "../../trpc/init";
+import { boardRouter } from "./board.router";
+import { taskRouter } from "./task.router";
+import { userRouter } from "./user.router";
 
-export const appRouter = createTRPCRouter({
+const baseRouter = createTRPCRouter({
 	hello: publicProcedure
 		.input(
 			z.object({
@@ -17,28 +20,13 @@ export const appRouter = createTRPCRouter({
 				greeting: `Hello ${opts.input.text}`,
 			};
 		}),
-
-	getProfile: protectedProcedure.query(async ({ ctx }) => {
-		// Here we could use the UserService to fetch more details if needed
-		// but for now, returning the session user is enough.
-		return ctx.session.user;
-	}),
-
-	getProjects: protectedProcedure.query(async () => {
-		// This will be replaced by a database query later.
-		// For now, return an empty array to show the Empty State in the UI.
-		return [];
-	}),
-
-	getTasks: protectedProcedure.query(async () => {
-		// Return empty array to trigger empty state in the sidebar
-		return [];
-	}),
-
-	getRunningTimer: protectedProcedure.query(async () => {
-		// Return null to show inactive state in the tracker
-		return null;
-	}),
 });
+
+export const appRouter = mergeRouters(
+	baseRouter,
+	boardRouter,
+	taskRouter,
+	userRouter,
+);
 
 export type AppRouter = typeof appRouter;

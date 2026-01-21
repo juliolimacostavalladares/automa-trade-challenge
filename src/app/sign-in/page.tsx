@@ -1,13 +1,12 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { SignInForm } from "@/components/auth/sign-in-form";
 import { ErrorBoundary } from "@/components/hoc/error-boundary";
 import { Button } from "@/components/ui/button";
-
-// Lazy Loading Component
-const SignInForm = lazy(() => import("@/components/auth/sign-in-form"));
 
 export default function SignInPage() {
 	const { setTheme, resolvedTheme } = useTheme();
@@ -58,7 +57,7 @@ export default function SignInPage() {
 							</div>
 						</div>
 						<div className="text-muted-foreground/60 text-sm">
-							© 2024 Taskify Inc. All rights reserved.
+							© 2026 Taskify Inc. All rights reserved.
 						</div>
 					</div>
 

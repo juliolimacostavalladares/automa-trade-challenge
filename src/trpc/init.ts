@@ -2,6 +2,7 @@ import { initTRPC } from "@trpc/server";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { ZodError } from "zod";
+import { db } from "@/db";
 import { auth } from "@/lib/auth";
 
 export const createTRPCContext = cache(async () => {
@@ -11,6 +12,7 @@ export const createTRPCContext = cache(async () => {
 
 	return {
 		session,
+		db,
 	};
 });
 
@@ -28,6 +30,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 export const createTRPCRouter = t.router;
+export const mergeRouters = t.mergeRouters;
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
 	if (!ctx.session) {
@@ -36,6 +39,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
 	return next({
 		ctx: {
 			session: ctx.session,
+			db: ctx.db,
 		},
 	});
 });

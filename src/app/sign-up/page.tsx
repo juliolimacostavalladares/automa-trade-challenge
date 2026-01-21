@@ -2,11 +2,10 @@
 
 import { CheckCircle2, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { SignUpForm } from "@/components/auth/sign-up-form";
 import { ErrorBoundary } from "@/components/hoc/error-boundary";
 import { Button } from "@/components/ui/button";
-
-const SignUpForm = lazy(() => import("@/components/auth/sign-up-form"));
 
 export default function SignUpPage() {
 	const { setTheme, resolvedTheme } = useTheme();
@@ -24,7 +23,6 @@ export default function SignUpPage() {
 		<ErrorBoundary>
 			<div className="bg-background min-h-screen flex items-center justify-center p-4 md:p-8 transition-colors duration-300 font-display">
 				<div className="max-w-6xl w-full grid md:grid-cols-2 bg-card rounded-3xl overflow-hidden shadow-2xl custom-shadow border border-border min-h-200">
-					{/* Left Side - Hero/Branding */}
 					<div className="hidden md:flex flex-col justify-between p-12 bg-secondary/30 relative overflow-hidden">
 						<div className="absolute top-[-10%] right-[-10%] w-64 h-64 border-4 border-primary/20 rounded-full"></div>
 						<div className="absolute bottom-[-5%] left-[-5%] w-48 h-48 border-4 border-primary/10 rounded-full"></div>
@@ -50,7 +48,6 @@ export default function SignUpPage() {
 							</p>
 						</div>
 
-						{/* Mock UI Card */}
 						<div className="relative z-10 mt-8 bg-background/40 backdrop-blur-md rounded-2xl p-6 border border-border shadow-xl">
 							<div className="flex items-center justify-between mb-4">
 								<div className="flex items-center gap-3">
@@ -77,7 +74,7 @@ export default function SignUpPage() {
 						</div>
 
 						<div className="relative z-10 flex items-center gap-4 text-sm font-medium text-muted-foreground">
-							<span>© 2024 TaskMaster Inc.</span>
+							<span>© 2026 TaskMaster Inc.</span>
 
 							<span>•</span>
 
@@ -86,8 +83,6 @@ export default function SignUpPage() {
 							</a>
 						</div>
 					</div>
-
-					{/* Right Side - Form */}
 
 					<div className="p-8 md:p-16 flex flex-col justify-center bg-background/50">
 						<Suspense
@@ -101,8 +96,6 @@ export default function SignUpPage() {
 						</Suspense>
 					</div>
 				</div>
-
-				{/* Theme Toggle Button */}
 
 				<Button
 					type="button"

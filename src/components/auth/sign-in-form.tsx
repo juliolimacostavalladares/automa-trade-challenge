@@ -3,18 +3,25 @@
 import { AtSign, Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Auth } from "@/components/auth/auth-form";
+import { useAuth } from "@/components/hooks/use-auth";
+import {
+	type SignInInput,
+	signInSchema,
+} from "@/components/schemas/auth.schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAuth } from "@/hooks/use-auth";
-import { type SignInInput, signInSchema } from "@/schemas/auth.schema";
+import { Auth } from "./auth-form";
 
-export default function SignInForm() {
+export function SignInForm() {
 	const { signIn, isLoading, error: authError } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 
 	const onSubmit = (data: SignInInput) => {
 		signIn(data.email, data.password);
+	};
+
+	const togglePasswordVisibility = () => {
+		setShowPassword((prev) => !prev);
 	};
 
 	return (
@@ -64,7 +71,7 @@ export default function SignInForm() {
 								type="button"
 								variant="ghost"
 								size="icon"
-								onClick={() => setShowPassword(!showPassword)}
+								onClick={togglePasswordVisibility}
 								className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
 							>
 								{showPassword ? (
